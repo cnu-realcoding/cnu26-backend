@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- ========== 변수 정의 ========== -->
     <property name="LOG_DIR" value="./logs"/>
     <property name="LOG_FILE" value="application"/>
 
-    <!-- ========== 콘솔 출력 (Console Appender) ========== -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- ========== 파일 출력 (File Appender) ========== -->
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>${LOG_DIR}/${LOG_FILE}.log</file>
         <encoder>
@@ -20,7 +17,6 @@
         </encoder>
     </appender>
 
-    <!-- ========== 롤링 파일 (Rolling File Appender) ========== -->
     <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${LOG_FILE}-rolling.log</file>
         <encoder>
@@ -35,34 +31,15 @@
     </appender>
 
     <!-- ========== 프로필별 로그 설정 ========== -->
-    <!-- springProfile 태그로 프로필에 따라 다른 로그 설정 적용 -->
 
-    <!-- DEV: 콘솔만 사용, DEBUG 레벨 -->
-    <springProfile name="dev">
-        <logger name="com.inspire12.backend" level="DEBUG"/>
-        <logger name="org.springframework.web" level="DEBUG"/>
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-        </root>
-    </springProfile>
+    <!-- TODO: <springProfile name="dev"> 블록을 작성하세요 -->
+    <!-- DEV: 콘솔만 사용, 애플리케이션 DEBUG 레벨 -->
+    <!-- 힌트: <logger name="..." level="..."/>, <root level="..."><appender-ref ref="CONSOLE"/></root> -->
 
-    <!-- PROD: 콘솔 + 롤링 파일, INFO 레벨 -->
-    <springProfile name="prod">
-        <logger name="com.inspire12.backend" level="INFO"/>
-        <logger name="org.springframework" level="WARN"/>
-        <root level="WARN">
-            <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="ROLLING_FILE"/>
-        </root>
-    </springProfile>
+    <!-- TODO: <springProfile name="prod"> 블록을 작성하세요 -->
+    <!-- PROD: 콘솔 + 롤링 파일, 애플리케이션 INFO, Spring WARN 레벨 -->
 
-    <!-- 프로필 미지정 시 기본 설정 -->
-    <springProfile name="default">
-        <logger name="com.inspire12.backend" level="DEBUG"/>
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE"/>
-        </root>
-    </springProfile>
+    <!-- TODO: <springProfile name="default"> 블록을 작성하세요 -->
+    <!-- 프로필 미지정 시: 콘솔 + 파일, 애플리케이션 DEBUG 레벨 -->
 
 </configuration>
