@@ -58,7 +58,7 @@ public class UserController {
         return users.stream()
                 .filter(u -> u.id().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElse(null); // TODO: orElse(null) 대신 .orElseThrow() 로 UserNotFoundException 을 던지세요
     }
 
     @Operation(summary = "유저 검색", description = "이름으로 유저를 검색합니다")
@@ -104,13 +104,11 @@ public class UserController {
     })
     @GetMapping("/{id}/detail")
     public User getUserDetail(@Parameter(description = "유저 ID") @PathVariable Long id) {
-        if (id <= 0) {
-            throw new InvalidRequestException("ID는 1 이상이어야 합니다. 입력값: " + id);
-        }
+        // TODO: id <= 0 이면 InvalidRequestException 을 던지세요 (메시지: "ID는 1 이상이어야 합니다. 입력값: " + id)
         return users.stream()
                 .filter(u -> u.id().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElse(null); // TODO: UserNotFoundException 을 던지세요
     }
 
     // ========== POST ==========
@@ -144,7 +142,7 @@ public class UserController {
                 return updated;
             }
         }
-        throw new UserNotFoundException(id);
+        return null; // TODO: UserNotFoundException 을 던지세요
     }
 
     // ========== DELETE ==========
@@ -157,9 +155,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
         boolean removed = users.removeIf(u -> u.id().equals(id));
-        if (!removed) {
-            throw new UserNotFoundException(id);
-        }
+        // TODO: removed 가 false 이면 UserNotFoundException 을 던지세요
         return ResponseEntity.noContent().build();
     }
 }
