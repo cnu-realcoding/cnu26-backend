@@ -121,13 +121,21 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - `UserHealthIndicator` : 커스텀 헬스 체크
   - `Counter` (Micrometer) : 유저 생성 횟수 카운터
 
-### Step 10. 데이터베이스 연동 (예정)
-- **branch:** `db/start`
-- H2 / JPA 설정, Entity, Repository
+### Step 10. Layered Architecture - Service & Repository
+- **branch:** `layered/service-repository`
+- Controller → Service → Repository 계층 분리
+  - `UserRepository` (인터페이스) : 데이터 접근 계약 정의
+  - `MemoryUserRepository` (`@Repository`) : 인메모리 구현체 (ConcurrentHashMap)
+  - `UserService` (`@Service`) : 비즈니스 로직 (검증, 예외 처리, 로깅)
+  - `UserController` : HTTP 요청/응답만 담당 (얇은 계층)
+- 각 계층의 역할
+  - Controller: 요청 파싱, 응답 생성, Swagger 문서화
+  - Service: 비즈니스 로직, 예외 던지기, 로깅
+  - Repository: 데이터 CRUD (저장소 추상화)
 
-### Step 11. 유저 기능 완성 (예정)
-- **branch:** `feature/user`
-- 회원가입, 로그인, Service 계층 분리
+### Step 11. 데이터베이스 연동 (예정)
+- **branch:** `layered/db`
+- H2 / JPA 설정, Entity, JPA Repository 로 교체
 
 ### Step 12. 외부 API 연동 (예정)
 - **branch:** `feature/naver-shopping`

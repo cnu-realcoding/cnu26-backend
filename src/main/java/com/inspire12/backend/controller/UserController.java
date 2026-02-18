@@ -1,14 +1,11 @@
 package com.inspire12.backend.controller;
 
 import com.inspire12.backend.dto.User;
-import com.inspire12.backend.exception.InvalidRequestException;
-import com.inspire12.backend.exception.UserNotFoundException;
+import com.inspire12.backend.service.UserService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,34 +22,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
+// Controller: HTTP 요청/응답만 담당 (얇은 계층)
+// 비즈니스 로직은 Service 에 위임
 @Tag(name = "User", description = "유저 API")
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
-
-    // 커스텀 메트릭: 유저 생성 횟수 카운터
+    private final UserService userService;
     private final Counter userCreateCounter;
 
-    public UserController(MeterRegistry meterRegistry) {
+    public UserController(UserService userService, MeterRegistry meterRegistry) {
+        this.userService = userService;
         this.userCreateCounter = Counter.builder("user.created.count")
                 .description("유저 생성 횟수")
                 .tag("controller", "UserController")
                 .register(meterRegistry);
     }
-
-    private final List<User> users = new ArrayList<>(List.of(
-            new User(1L, "홍길동", "hong@example.com"),
-            new User(2L, "김철수", "kim@example.com"),
-            new User(3L, "이영희", "lee@example.com")
-    ));
-    private final AtomicLong idGenerator = new AtomicLong(4);
 
     // ========== GET ==========
 
@@ -65,29 +54,19 @@ public class UserController {
     @Operation(summary = "유저 목록 조회", description = "전체 유저 목록을 반환합니다")
     @GetMapping
     public List<User> getUsers() {
-        log.info("유저 목록 조회 요청 - 총 {}명", users.size());
-        return users;
+        return userService.getAllUsers();
     }
 
     @Operation(summary = "유저 단건 조회", description = "ID로 유저를 조회합니다")
     @GetMapping("/{id}")
     public User getUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
-        log.debug("유저 단건 조회 요청 - id: {}", id);
-        return users.stream()
-                .filter(u -> u.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(id));
+        return userService.getUserById(id);
     }
 
     @Operation(summary = "유저 검색", description = "이름으로 유저를 검색합니다")
     @GetMapping("/search")
     public List<User> searchUsers(@Parameter(description = "검색할 이름") @RequestParam String name) {
-        log.info("유저 검색 요청 - name: {}", name);
-        List<User> result = users.stream()
-                .filter(u -> u.name().contains(name))
-                .toList();
-        log.debug("유저 검색 결과 - {}건", result.size());
-        return result;
+        return userService.searchByName(name);
     }
 
     @Operation(summary = "유저 목록 (페이징)", description = "페이지 단위로 유저를 조회합니다")
@@ -95,14 +74,15 @@ public class UserController {
     public Map<String, Object> getUsersWithPage(
             @Parameter(description = "페이지 번호 (0부터 시작)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "페이지 크기") @RequestParam(defaultValue = "10") int size) {
-        List<User> paged = users.stream()
+        List<User> all = userService.getAllUsers();
+        List<User> paged = all.stream()
                 .skip((long) page * size)
                 .limit(size)
                 .toList();
         return Map.of(
                 "page", page,
                 "size", size,
-                "totalElements", users.size(),
+                "totalElements", all.size(),
                 "content", paged
         );
     }
@@ -125,13 +105,7 @@ public class UserController {
     })
     @GetMapping("/{id}/detail")
     public User getUserDetail(@Parameter(description = "유저 ID") @PathVariable Long id) {
-        if (id <= 0) {
-            throw new InvalidRequestException("ID는 1 이상이어야 합니다. 입력값: " + id);
-        }
-        return users.stream()
-                .filter(u -> u.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(id));
+        return userService.getUserDetail(id);
     }
 
     // ========== POST ==========
@@ -140,14 +114,11 @@ public class UserController {
     @ApiResponse(responseCode = "201", description = "생성 성공")
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User request) {
-        log.info("유저 생성 요청 - name: {}, email: {}", request.name(), request.email());
-        User newUser = new User(idGenerator.getAndIncrement(), request.name(), request.email());
-        users.add(newUser);
+        User created = userService.createUser(request);
         userCreateCounter.increment();
-        log.info("유저 생성 완료 - id: {}, 총 생성 횟수: {}", newUser.id(), userCreateCounter.count());
         return ResponseEntity
-                .created(URI.create("/users/" + newUser.id()))
-                .body(newUser);
+                .created(URI.create("/users/" + created.id()))
+                .body(created);
     }
 
     // ========== PUT ==========
@@ -161,16 +132,7 @@ public class UserController {
     public User updateUser(
             @Parameter(description = "유저 ID") @PathVariable Long id,
             @RequestBody User request) {
-        log.info("유저 수정 요청 - id: {}, name: {}, email: {}", id, request.name(), request.email());
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).id().equals(id)) {
-                User updated = new User(id, request.name(), request.email());
-                users.set(i, updated);
-                log.info("유저 수정 완료 - id: {}", id);
-                return updated;
-            }
-        }
-        throw new UserNotFoundException(id);
+        return userService.updateUser(id, request);
     }
 
     // ========== DELETE ==========
@@ -182,12 +144,7 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
-        log.info("유저 삭제 요청 - id: {}", id);
-        boolean removed = users.removeIf(u -> u.id().equals(id));
-        if (!removed) {
-            throw new UserNotFoundException(id);
-        }
-        log.warn("유저 삭제 완료 - id: {}", id);
+        userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 }
