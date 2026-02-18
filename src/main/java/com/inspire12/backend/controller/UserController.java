@@ -5,11 +5,11 @@ import com.inspire12.backend.exception.InvalidRequestException;
 import com.inspire12.backend.exception.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+// TODO: Logger, LoggerFactory 를 import 하세요
+// 힌트: org.slf4j.Logger, org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +33,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequestMapping("/users")
 public class UserController {
 
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    // TODO: Logger 를 선언하세요
+    // 힌트: private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     private final List<User> users = new ArrayList<>(List.of(
             new User(1L, "홍길동", "hong@example.com"),
@@ -53,14 +54,15 @@ public class UserController {
     @Operation(summary = "유저 목록 조회", description = "전체 유저 목록을 반환합니다")
     @GetMapping
     public List<User> getUsers() {
-        log.info("유저 목록 조회 요청 - 총 {}명", users.size());
+        // TODO: log.info() 로 유저 목록 조회 요청을 기록하세요
+        // 힌트: log.info("유저 목록 조회 요청 - 총 {}명", users.size());
         return users;
     }
 
     @Operation(summary = "유저 단건 조회", description = "ID로 유저를 조회합니다")
     @GetMapping("/{id}")
     public User getUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
-        log.debug("유저 단건 조회 요청 - id: {}", id);
+        // TODO: log.debug() 로 유저 단건 조회 요청을 기록하세요 (debug 는 상세 디버깅용)
         return users.stream()
                 .filter(u -> u.id().equals(id))
                 .findFirst()
@@ -70,11 +72,11 @@ public class UserController {
     @Operation(summary = "유저 검색", description = "이름으로 유저를 검색합니다")
     @GetMapping("/search")
     public List<User> searchUsers(@Parameter(description = "검색할 이름") @RequestParam String name) {
-        log.info("유저 검색 요청 - name: {}", name);
+        // TODO: log.info() 로 검색 요청을 기록하세요
         List<User> result = users.stream()
                 .filter(u -> u.name().contains(name))
                 .toList();
-        log.debug("유저 검색 결과 - {}건", result.size());
+        // TODO: log.debug() 로 검색 결과 건수를 기록하세요
         return result;
     }
 
@@ -128,10 +130,10 @@ public class UserController {
     @ApiResponse(responseCode = "201", description = "생성 성공")
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User request) {
-        log.info("유저 생성 요청 - name: {}, email: {}", request.name(), request.email());
+        // TODO: log.info() 로 유저 생성 요청을 기록하세요 (name, email)
         User newUser = new User(idGenerator.getAndIncrement(), request.name(), request.email());
         users.add(newUser);
-        log.info("유저 생성 완료 - id: {}", newUser.id());
+        // TODO: log.info() 로 유저 생성 완료를 기록하세요 (id)
         return ResponseEntity
                 .created(URI.create("/users/" + newUser.id()))
                 .body(newUser);
@@ -148,12 +150,12 @@ public class UserController {
     public User updateUser(
             @Parameter(description = "유저 ID") @PathVariable Long id,
             @RequestBody User request) {
-        log.info("유저 수정 요청 - id: {}, name: {}, email: {}", id, request.name(), request.email());
+        // TODO: log.info() 로 유저 수정 요청을 기록하세요 (id, name, email)
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).id().equals(id)) {
                 User updated = new User(id, request.name(), request.email());
                 users.set(i, updated);
-                log.info("유저 수정 완료 - id: {}", id);
+                // TODO: log.info() 로 유저 수정 완료를 기록하세요
                 return updated;
             }
         }
@@ -169,12 +171,12 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
-        log.info("유저 삭제 요청 - id: {}", id);
+        // TODO: log.info() 로 유저 삭제 요청을 기록하세요
         boolean removed = users.removeIf(u -> u.id().equals(id));
         if (!removed) {
             throw new UserNotFoundException(id);
         }
-        log.warn("유저 삭제 완료 - id: {}", id);
+        // TODO: log.warn() 으로 유저 삭제 완료를 기록하세요 (삭제는 주의가 필요한 작업이므로 warn)
         return ResponseEntity.noContent().build();
     }
 }

@@ -9,14 +9,18 @@
     <!-- 개발 시 터미널에서 로그 확인용 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- 패턴: 시간 [스레드] 로그레벨 로거이름 - 메시지 -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+            <!-- TODO: 로그 패턴을 작성하세요 -->
+            <!-- 힌트: %d{날짜패턴} [%thread] %-5level %logger{36} - %msg%n -->
+            <!-- %highlight() 로 레벨 컬러, %cyan() 으로 로거이름 컬러 적용 가능 -->
+            <pattern><!-- TODO --></pattern>
         </encoder>
     </appender>
 
     <!-- ========== 파일 출력 (File Appender) ========== -->
     <!-- 로그를 파일에 저장 -->
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <!-- TODO: FileAppender 를 설정하세요 -->
+    <!-- 힌트: class="ch.qos.logback.core.FileAppender" -->
+    <appender name="FILE" class="TODO">
         <file>${LOG_DIR}/${LOG_FILE}.log</file>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -28,40 +32,36 @@
     <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${LOG_FILE}-rolling.log</file>
         <encoder>
-            <!-- JSON 스타일 포맷으로 변경해보기 -->
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
 
         <!-- 롤링 정책: 날짜 + 파일 크기 기반 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <!-- 파일명 패턴: 날짜별 + 인덱스 -->
-            <fileNamePattern>${LOG_DIR}/archived/${LOG_FILE}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <!-- 단일 파일 최대 크기 -->
-            <maxFileSize>10MB</maxFileSize>
-            <!-- 최대 보관 일수 -->
-            <maxHistory>30</maxHistory>
-            <!-- 전체 로그 최대 용량 -->
-            <totalSizeCap>1GB</totalSizeCap>
+            <!-- TODO: 파일명 패턴을 작성하세요 (날짜별 + 인덱스) -->
+            <!-- 힌트: ${LOG_DIR}/archived/${LOG_FILE}.%d{yyyy-MM-dd}.%i.log -->
+            <fileNamePattern><!-- TODO --></fileNamePattern>
+            <!-- TODO: 단일 파일 최대 크기를 설정하세요 (예: 10MB) -->
+            <maxFileSize><!-- TODO --></maxFileSize>
+            <!-- TODO: 최대 보관 일수를 설정하세요 (예: 30) -->
+            <maxHistory><!-- TODO --></maxHistory>
+            <!-- TODO: 전체 로그 최대 용량을 설정하세요 (예: 1GB) -->
+            <totalSizeCap><!-- TODO --></totalSizeCap>
         </rollingPolicy>
     </appender>
 
     <!-- ========== 로그 레벨 설정 ========== -->
 
-    <!-- 우리 애플리케이션: DEBUG 레벨부터 출력 -->
-    <logger name="com.inspire12.backend" level="DEBUG"/>
+    <!-- TODO: 우리 애플리케이션 패키지의 로그 레벨을 DEBUG 로 설정하세요 -->
+    <!-- 힌트: <logger name="패키지경로" level="레벨"/> -->
 
-    <!-- Spring 프레임워크: INFO 레벨부터 출력 (너무 많은 로그 방지) -->
-    <logger name="org.springframework" level="INFO"/>
+    <!-- TODO: Spring 프레임워크의 로그 레벨을 INFO 로 설정하세요 -->
 
-    <!-- SQL 관련 (향후 JPA 사용 시): DEBUG 로 변경하면 쿼리 확인 가능 -->
-    <logger name="org.hibernate" level="WARN"/>
+    <!-- TODO: Hibernate 의 로그 레벨을 WARN 으로 설정하세요 -->
 
     <!-- ========== 루트 로거 ========== -->
-    <!-- 기본 로그 레벨과 사용할 Appender 지정 -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
-        <appender-ref ref="ROLLING_FILE"/>
+    <!-- TODO: 루트 로거의 level 을 INFO 로 설정하고, 위에서 만든 3개 Appender 를 등록하세요 -->
+    <root level="TODO">
+        <!-- TODO: appender-ref 를 추가하세요 (CONSOLE, FILE, ROLLING_FILE) -->
     </root>
 
 </configuration>
