@@ -6,19 +6,21 @@ import java.util.Optional;
 // Spring Data JPA 의 CrudRepository 를 흉내낸 제네릭 인터페이스
 // T: 엔티티 타입, ID: PK 타입
 //
-// 이 인터페이스 하나로 어떤 엔티티든 기본 CRUD 를 제공할 수 있다
-// Spring Data JPA 에서는 이 인터페이스를 extends 하면 구현체가 자동 생성됨
+// TODO: 제네릭 타입 파라미터 <T, ID> 를 선언하세요
 public interface CrudRepository<T, ID> {
 
-    List<T> findAll();
+    // TODO: 전체 조회 메서드를 선언하세요
+    // 힌트: List<T> findAll();
 
-    Optional<T> findById(ID id);
+    // TODO: ID 로 단건 조회 메서드를 선언하세요
+    // 힌트: Optional<T> findById(ID id);
 
-    T save(T entity);
+    // TODO: 엔티티 저장 (생성 + 수정) 메서드를 선언하세요
+    // 힌트: T save(T entity);
 
-    void deleteById(ID id);
+    // TODO: ID 로 삭제 메서드를 선언하세요
 
-    boolean existsById(ID id);
+    // TODO: ID 로 존재 여부 확인 메서드를 선언하세요
 
-    long count();
+    // TODO: 전체 개수 반환 메서드를 선언하세요
 }
