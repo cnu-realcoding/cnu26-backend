@@ -78,18 +78,34 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - Before: `return ResponseEntity.notFound().build()`
   - After: `throw new UserNotFoundException(id)` → GlobalExceptionHandler 가 처리
 
-### Step 7. 데이터베이스 연동 (예정)
+### Step 7. 로깅 (Logback)
+- **branch:** `web/logging`
+- `logback-spring.xml` 설정
+  - Console Appender : 터미널 출력 (컬러 하이라이트)
+  - File Appender : `./logs/application.log` 파일 저장
+  - Rolling File Appender : 날짜 + 크기 기반 롤링 (`10MB`, `30일`, `1GB`)
+- 로그 레벨 사용 예시
+  - `log.debug()` : 상세 디버깅 정보 (단건 조회 파라미터)
+  - `log.info()` : 주요 비즈니스 이벤트 (생성, 수정, 검색)
+  - `log.warn()` : 주의 필요한 이벤트 (삭제, 예외 발생)
+  - `log.error()` : 예상치 못한 에러 (스택 트레이스 포함)
+- 패키지별 로그 레벨 분리
+  - `com.inspire12.backend` → DEBUG
+  - `org.springframework` → INFO
+  - `org.hibernate` → WARN
+
+### Step 8. 데이터베이스 연동 (예정)
 - **branch:** `db/start`
 - H2 / JPA 설정, Entity, Repository
 
-### Step 8. 유저 기능 완성 (예정)
+### Step 9. 유저 기능 완성 (예정)
 - **branch:** `feature/user`
 - 회원가입, 로그인, Service 계층 분리
 
-### Step 9. 외부 API 연동 (예정)
+### Step 10. 외부 API 연동 (예정)
 - **branch:** `feature/naver-shopping`
 - 네이버 쇼핑 API 연동, RestClient 사용
 
-### Step 10. 통합 (예정)
+### Step 11. 통합 (예정)
 - **branch:** `feature/shopping-mall`
 - 유저 기능 + 쇼핑 기능 통합
