@@ -1,6 +1,8 @@
 package com.inspire12.backend.controller;
 
 import com.inspire12.backend.dto.User;
+import com.inspire12.backend.exception.InvalidRequestException;
+import com.inspire12.backend.exception.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -56,7 +58,7 @@ public class UserController {
         return users.stream()
                 .filter(u -> u.id().equals(id))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Operation(summary = "유저 검색", description = "이름으로 유저를 검색합니다")
@@ -101,13 +103,14 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "잘못된 ID")
     })
     @GetMapping("/{id}/detail")
-    public ResponseEntity<User> getUserDetail(@Parameter(description = "유저 ID") @PathVariable Long id) {
+    public User getUserDetail(@Parameter(description = "유저 ID") @PathVariable Long id) {
         if (id <= 0) {
-            return ResponseEntity.badRequest().build();
+            throw new InvalidRequestException("ID는 1 이상이어야 합니다. 입력값: " + id);
         }
-        return ResponseEntity.ok(
-                new User(id, "홍길동", "hong@example.com")
-        );
+        return users.stream()
+                .filter(u -> u.id().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     // ========== POST ==========
@@ -131,17 +134,17 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(
+    public User updateUser(
             @Parameter(description = "유저 ID") @PathVariable Long id,
             @RequestBody User request) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).id().equals(id)) {
                 User updated = new User(id, request.name(), request.email());
                 users.set(i, updated);
-                return ResponseEntity.ok(updated);
+                return updated;
             }
         }
-        return ResponseEntity.notFound().build();
+        throw new UserNotFoundException(id);
     }
 
     // ========== DELETE ==========
@@ -154,9 +157,9 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
         boolean removed = users.removeIf(u -> u.id().equals(id));
-        if (removed) {
-            return ResponseEntity.noContent().build();
+        if (!removed) {
+            throw new UserNotFoundException(id);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }

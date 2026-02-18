@@ -65,18 +65,31 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
 - Swagger UI: http://localhost:8080/swagger-ui/index.html
 - OpenAPI JSON: http://localhost:8080/v3/api-docs
 
-### Step 6. 데이터베이스 연동 (예정)
+### Step 6. 예외 처리와 Global Exception Handler
+- **branch:** `web/exception`
+- 커스텀 예외 클래스
+  - `UserNotFoundException` : 유저 조회 실패 시 (→ 404)
+  - `InvalidRequestException` : 잘못된 요청 시 (→ 400)
+- `ErrorResponse` record : 통일된 에러 응답 형식 (status, error, message, timestamp)
+- `GlobalExceptionHandler` (`@RestControllerAdvice`)
+  - `@ExceptionHandler` 로 예외 타입별 응답 분기
+  - 컨트롤러에서 `null` 반환 / `ResponseEntity` 분기 → 예외 던지기로 변경
+- Before vs After 비교
+  - Before: `return ResponseEntity.notFound().build()`
+  - After: `throw new UserNotFoundException(id)` → GlobalExceptionHandler 가 처리
+
+### Step 7. 데이터베이스 연동 (예정)
 - **branch:** `db/start`
 - H2 / JPA 설정, Entity, Repository
 
-### Step 7. 유저 기능 완성 (예정)
+### Step 8. 유저 기능 완성 (예정)
 - **branch:** `feature/user`
 - 회원가입, 로그인, Service 계층 분리
 
-### Step 8. 외부 API 연동 (예정)
+### Step 9. 외부 API 연동 (예정)
 - **branch:** `feature/naver-shopping`
 - 네이버 쇼핑 API 연동, RestClient 사용
 
-### Step 9. 통합 (예정)
+### Step 10. 통합 (예정)
 - **branch:** `feature/shopping-mall`
 - 유저 기능 + 쇼핑 기능 통합
