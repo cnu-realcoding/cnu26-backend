@@ -3,6 +3,7 @@
 --
 -- spring.sql.init.mode=always 설정 시 매번 실행됨
 -- INSERT OR IGNORE: 이미 데이터가 있으면 무시 (SQLite 문법)
-INSERT OR IGNORE INTO users (id, name, email) VALUES (1, '홍길동', 'hong@example.com');
-INSERT OR IGNORE INTO users (id, name, email) VALUES (2, '김철수', 'kim@example.com');
-INSERT OR IGNORE INTO users (id, name, email) VALUES (3, '이영희', 'lee@example.com');
+-- TODO: 초기 유저 데이터를 INSERT 문으로 작성하세요
+-- INSERT OR IGNORE INTO ???? (id, name, email) VALUES (1, '홍길동', 'hong@example.com');
+-- INSERT OR IGNORE INTO ???? (id, name, email) VALUES (2, '김철수', 'kim@example.com');
+-- INSERT OR IGNORE INTO ???? (id, name, email) VALUES (3, '이영희', 'lee@example.com');

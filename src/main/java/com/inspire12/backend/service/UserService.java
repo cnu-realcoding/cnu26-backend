@@ -19,6 +19,7 @@ import java.util.List;
 // 2. @Transactional 로 트랜잭션 관리
 //    - readOnly = true : 조회 전용 (성능 최적화)
 //    - 기본값(readOnly = false) : 쓰기 작업
+// TODO: 클래스 레벨에 @Transactional(readOnly = true) 를 추가하세요
 @Service
 @Transactional(readOnly = true)
 public class UserService {
@@ -32,6 +33,8 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
+        // TODO: findAll() 결과를 Entity → DTO 로 변환하세요
+        // 힌트: stream().map(this::toDto).toList()
         List<User> users = userRepository.findAll().stream()
                 .map(this::toDto)
                 .toList();
@@ -62,9 +65,11 @@ public class UserService {
         return result;
     }
 
+    // TODO: 쓰기 작업에는 @Transactional 을 추가하세요 (readOnly 아님)
     @Transactional
     public User createUser(User request) {
         log.info("유저 생성 요청 - name: {}, email: {}", request.name(), request.email());
+        // TODO: User DTO → UserEntity 로 변환하여 저장하세요
         UserEntity entity = new UserEntity(request.name(), request.email());
         UserEntity saved = userRepository.save(entity);
         log.info("유저 생성 완료 - id: {}", saved.getId());
@@ -102,7 +107,7 @@ public class UserService {
 
     // ========== Entity ↔ DTO 변환 ==========
 
-    // Entity → DTO : DB 에서 조회한 Entity 를 Controller 에 전달할 DTO 로 변환
+    // TODO: Entity → DTO 변환 메서드를 완성하세요
     private User toDto(UserEntity entity) {
         return new User(entity.getId(), entity.getName(), entity.getEmail());
     }

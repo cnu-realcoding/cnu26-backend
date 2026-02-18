@@ -18,10 +18,11 @@ import java.util.List;
 //   CrudRepository<User, Long>    →  JpaRepository<UserEntity, Long>
 //   MemoryUserRepository (직접)    →  Spring Data JPA 가 프록시로 자동 생성
 //   findByNameContaining (직접)    →  메서드 이름으로 쿼리 자동 생성
+// TODO: JpaRepository<엔티티타입, PK타입> 을 extends 하도록 변경하세요
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    // 커스텀 쿼리 메서드: 이름으로 검색
-    // Spring Data JPA 가 메서드 이름을 분석해서 SQL 을 자동 생성함
+    // TODO: 이름으로 검색하는 쿼리 메서드를 선언하세요
+    // 힌트: Spring Data JPA 는 메서드 이름으로 쿼리를 자동 생성합니다
     // → SELECT * FROM users WHERE name LIKE '%keyword%'
     List<UserEntity> findByNameContaining(String name);
 }

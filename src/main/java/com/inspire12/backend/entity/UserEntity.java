@@ -17,21 +17,21 @@ import jakarta.persistence.Table;
 // 2. @Id 로 기본키 지정
 // 3. 기본 생성자(no-args constructor) 필수
 // 4. record 는 사용할 수 없음 (JPA 가 내부에서 객체를 생성/변경해야 하므로)
-@Entity
-@Table(name = "users")
+// TODO: 이 클래스를 JPA 엔티티로 만들기 위한 어노테이션 2개를 추가하세요
+// @????
+// @????(name = "users")
 public class UserEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // TODO: 기본키(PK) 어노테이션과 자동 생성 전략을 지정하세요
+    // @????
+    // @????(strategy = GenerationType.????)
     private Long id;
 
     private String name;
 
     private String email;
 
-    // JPA 가 내부에서 사용하는 기본 생성자
-    protected UserEntity() {
-    }
+    // TODO: JPA 가 사용하는 기본 생성자를 추가하세요 (접근제어자: protected)
 
     public UserEntity(String name, String email) {
         this.name = name;

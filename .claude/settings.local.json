@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew compileJava:*)",
+      "Bash(chmod:*)",
+      "Bash(/Users/inspire12/Documents/workspace/lectures/realcoding/realcoding2026/cnu26-backend/gradlew:*)",
+      "Bash(/usr/libexec/java_home:*)",
+      "Bash(JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home /Users/inspire12/Documents/workspace/lectures/realcoding/realcoding2026/cnu26-backend/gradlew:*)",
+      "Bash(git -C /Users/inspire12/Documents/workspace/lectures/realcoding/realcoding2026/cnu26-backend log --oneline -5)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git -C /Users/inspire12/Documents/workspace/lectures/realcoding/realcoding2026/cnu26-backend checkout -b web/get-practice)",
+      "Bash(git checkout:*)",
+      "Bash(git -C /Users/inspire12/Documents/workspace/lectures/realcoding/realcoding2026/cnu26-backend checkout:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(xargs:*)",
+      "Bash(jar tf:*)",
+      "Bash(while read jar)",
+      "Bash(do if jar tf \"$jar\")",
+      "Bash(then echo \"$jar\")",
+      "Bash(fi)",
+      "Bash(done)",
+      "WebFetch(domain:mvnrepository.com)",
+      "Bash(JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home ./gradlew compileJava:*)",
+      "WebFetch(domain:developers.naver.com)",
+      "WebFetch(domain:velog.io)",
+      "Bash(git branch:*)"
+    ]
+  }
+}

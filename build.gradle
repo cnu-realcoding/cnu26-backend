@@ -21,14 +21,16 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// TODO: Spring Data JPA 의존성을 추가하세요
+	// implementation 'org.springframework.boot:spring-boot-starter-????'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 	// SQLite JDBC 드라이버 + Hibernate SQLite Dialect
 	// Hibernate 7.x 부터 커뮤니티 Dialect 가 별도 모듈로 분리됨
-	runtimeOnly 'org.xerial:sqlite-jdbc:3.47.1.0'
-	runtimeOnly 'org.hibernate.orm:hibernate-community-dialects'
+	// TODO: SQLite JDBC 드라이버와 Hibernate Community Dialects 를 추가하세요
+	// runtimeOnly 'org.xerial:????'
+	// runtimeOnly 'org.hibernate.orm:????'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
