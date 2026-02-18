@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-// 네이버 쇼핑 검색 API 를 활용한 상품 검색 컨트롤러
+// TODO: 네이버 쇼핑 검색 컨트롤러를 완성하세요
+// 1. @RestController, @RequestMapping("/shop") 어노테이션 추가
+// 2. NaverShoppingService 를 주입받는 생성자 작성
+// 3. GET /shop/search 엔드포인트 구현
 //
 // 외부 API 연동 흐름:
 //   Client → ShoppingController → NaverShoppingService → RestClient → 네이버 API

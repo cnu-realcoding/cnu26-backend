@@ -25,16 +25,19 @@ public class NaverShoppingService {
 
     private final RestClient restClient;
 
-    // application.properties 에서 값을 주입받음
+    // TODO: application.properties 에서 네이버 API 키를 주입받으세요
     // @Value 는 설정 파일의 값을 필드에 바인딩하는 어노테이션
+    // @Value("${????}")
     @Value("${naver.client-id}")
     private String clientId;
 
+    // @Value("${????}")
     @Value("${naver.client-secret}")
     private String clientSecret;
 
     public NaverShoppingService() {
-        // RestClient 생성: 기본 URL 을 지정하면 이후 호출에서 경로만 사용 가능
+        // TODO: RestClient 를 생성하세요
+        // 힌트: RestClient.builder().baseUrl("https://openapi.naver.com").build()
         this.restClient = RestClient.builder()
                 .baseUrl("https://openapi.naver.com")
                 .build();
@@ -45,16 +48,19 @@ public class NaverShoppingService {
     public List<ShoppingItem> searchProducts(String query, int display) {
         log.info("네이버 쇼핑 검색 요청 - query: {}, display: {}", query, display);
 
+        // TODO: RestClient 로 네이버 쇼핑 API 를 호출하세요
+        // 1. .get() 으로 GET 요청
+        // 2. .uri() 로 경로(/v1/search/shop.json)와 쿼리 파라미터(query, display) 설정
+        // 3. .header() 로 X-Naver-Client-Id, X-Naver-Client-Secret 헤더 추가
+        // 4. .retrieve().body(NaverShoppingResponse.class) 로 응답 변환
         NaverShoppingResponse response = restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/v1/search/shop.json")
                         .queryParam("query", query)
                         .queryParam("display", display)
                         .build())
-                // 네이버 API 인증 헤더
                 .header("X-Naver-Client-Id", clientId)
                 .header("X-Naver-Client-Secret", clientSecret)
-                // 응답을 NaverShoppingResponse 로 변환
                 .retrieve()
                 .body(NaverShoppingResponse.class);
 
