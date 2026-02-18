@@ -32,19 +32,16 @@ public class UserController {
 
     // ========== GET ==========
 
-    // 1. 가장 단순한 GET 요청 - 문자열 응답
     @GetMapping("/hello")
     public String hello() {
         return "Hello, User!";
     }
 
-    // 2. 유저 목록 조회 - JSON 배열 응답
     @GetMapping
     public List<User> getUsers() {
         return users;
     }
 
-    // 3. PathVariable - 경로에서 값 추출
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
         return users.stream()
@@ -53,8 +50,6 @@ public class UserController {
                 .orElse(null);
     }
 
-    // 4. RequestParam - 쿼리 파라미터
-    // GET /users/search?name=홍길동
     @GetMapping("/search")
     public List<User> searchUsers(@RequestParam String name) {
         return users.stream()
@@ -62,8 +57,6 @@ public class UserController {
                 .toList();
     }
 
-    // 5. RequestParam 기본값 + 페이징
-    // GET /users/page?page=0&size=10
     @GetMapping("/page")
     public Map<String, Object> getUsersWithPage(
             @RequestParam(defaultValue = "0") int page,
@@ -80,8 +73,6 @@ public class UserController {
         );
     }
 
-    // 6. RequestHeader - 요청 헤더 읽기
-    // curl -H "Authorization: Bearer my-token" localhost:8080/users/me
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(@RequestHeader("Authorization") String authorization) {
         String token = authorization.replace("Bearer ", "");
@@ -90,7 +81,6 @@ public class UserController {
         );
     }
 
-    // 7. ResponseEntity - HTTP 상태코드 직접 제어
     @GetMapping("/{id}/detail")
     public ResponseEntity<User> getUserDetail(@PathVariable Long id) {
         if (id <= 0) {
@@ -105,41 +95,35 @@ public class UserController {
 
     // 8. POST - RequestBody 로 JSON 을 받아 유저 생성
     // curl -X POST -H "Content-Type: application/json" -d '{"name":"박민수","email":"park@example.com"}' localhost:8080/users
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User request) {
-        User newUser = new User(idGenerator.getAndIncrement(), request.name(), request.email());
-        users.add(newUser);
-        return ResponseEntity
-                .created(URI.create("/users/" + newUser.id()))
-                .body(newUser);
+    // TODO: POST 매핑 애노테이션을 추가하세요
+    public ResponseEntity<User> createUser(/* TODO: @RequestBody 애노테이션과 User 파라미터를 추가하세요 */) {
+        // TODO: idGenerator 로 새 ID 를 생성하고, request 의 name, email 로 새 User 를 만드세요
+        // TODO: users 리스트에 추가하세요
+        // TODO: ResponseEntity.created(URI.create("/users/" + id)).body(newUser) 로 201 응답을 반환하세요
+        return null;
     }
 
     // ========== PUT ==========
 
     // 9. PUT - 유저 정보 전체 수정
     // curl -X PUT -H "Content-Type: application/json" -d '{"name":"홍길동2","email":"hong2@example.com"}' localhost:8080/users/1
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User request) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).id().equals(id)) {
-                User updated = new User(id, request.name(), request.email());
-                users.set(i, updated);
-                return ResponseEntity.ok(updated);
-            }
-        }
-        return ResponseEntity.notFound().build();
+    // TODO: PUT 매핑 애노테이션을 추가하세요 (경로: /{id})
+    public ResponseEntity<User> updateUser(/* TODO: @PathVariable Long id, @RequestBody User request */) {
+        // TODO: users 리스트에서 id 가 일치하는 유저를 찾아 수정하세요
+        // TODO: 찾으면 ResponseEntity.ok(updated) 반환
+        // TODO: 못 찾으면 ResponseEntity.notFound().build() 반환
+        return null;
     }
 
     // ========== DELETE ==========
 
     // 10. DELETE - 유저 삭제
     // curl -X DELETE localhost:8080/users/1
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        boolean removed = users.removeIf(u -> u.id().equals(id));
-        if (removed) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    // TODO: DELETE 매핑 애노테이션을 추가하세요 (경로: /{id})
+    public ResponseEntity<Void> deleteUser(/* TODO: @PathVariable Long id */) {
+        // TODO: users.removeIf() 로 해당 id 의 유저를 삭제하세요
+        // TODO: 삭제 성공 시 ResponseEntity.noContent().build() 반환 (204)
+        // TODO: 삭제 실패 시 ResponseEntity.notFound().build() 반환 (404)
+        return null;
     }
 }
