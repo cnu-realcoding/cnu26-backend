@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "User Page", description = "유저 HTML 페이지 API")
+// TODO: @Tag 애노테이션으로 name="User Page", description="유저 HTML 페이지 API" 를 지정하세요
 @RestController
 @RequestMapping("/pages")
 public class UserPageController {
 
-    @Operation(summary = "유저 목록 HTML", description = "유저 목록을 HTML 로 반환합니다")
+    // TODO: @Operation 애노테이션으로 summary="유저 목록 HTML" 을 지정하세요
     @GetMapping(value = "/users", produces = MediaType.TEXT_HTML_VALUE)
     public String usersPage() {
         return """
@@ -30,7 +30,7 @@ public class UserPageController {
                 """;
     }
 
-    @Operation(summary = "유저 목록 JSON", description = "유저 목록을 JSON 으로 반환합니다")
+    // TODO: @Operation 애노테이션을 추가하세요
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public String usersJson() {
         return """
@@ -42,7 +42,7 @@ public class UserPageController {
                 """;
     }
 
-    @Operation(summary = "유저 상세 HTML", description = "유저 상세 정보를 HTML 로 반환합니다")
+    // TODO: @Operation 애노테이션을 추가하세요
     @GetMapping(value = "/users/{id}", produces = MediaType.TEXT_HTML_VALUE)
     public String userDetailPage(@PathVariable Long id) {
         return """

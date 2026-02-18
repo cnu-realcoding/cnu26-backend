@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Tag(name = "User", description = "유저 API")
+// TODO: @Tag 애노테이션으로 name="User", description="유저 API" 를 지정하세요
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -38,40 +38,43 @@ public class UserController {
 
     // ========== GET ==========
 
-    @Operation(summary = "인사 메시지", description = "단순 문자열 응답을 반환합니다")
+    // TODO: @Operation 애노테이션으로 summary="인사 메시지" 를 지정하세요
     @GetMapping("/hello")
     public String hello() {
         return "Hello, User!";
     }
 
-    @Operation(summary = "유저 목록 조회", description = "전체 유저 목록을 반환합니다")
+    // TODO: @Operation 애노테이션으로 summary="유저 목록 조회" 를 지정하세요
     @GetMapping
     public List<User> getUsers() {
         return users;
     }
 
-    @Operation(summary = "유저 단건 조회", description = "ID로 유저를 조회합니다")
+    // TODO: @Operation 애노테이션을 추가하세요
     @GetMapping("/{id}")
-    public User getUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
+    public User getUser(
+            /* TODO: @Parameter(description = "유저 ID") 를 추가하세요 */
+            @PathVariable Long id) {
         return users.stream()
                 .filter(u -> u.id().equals(id))
                 .findFirst()
                 .orElse(null);
     }
 
-    @Operation(summary = "유저 검색", description = "이름으로 유저를 검색합니다")
+    // TODO: @Operation 애노테이션을 추가하세요
     @GetMapping("/search")
-    public List<User> searchUsers(@Parameter(description = "검색할 이름") @RequestParam String name) {
+    public List<User> searchUsers(
+            /* TODO: @Parameter 를 추가하세요 */
+            @RequestParam String name) {
         return users.stream()
                 .filter(u -> u.name().contains(name))
                 .toList();
     }
 
-    @Operation(summary = "유저 목록 (페이징)", description = "페이지 단위로 유저를 조회합니다")
     @GetMapping("/page")
     public Map<String, Object> getUsersWithPage(
-            @Parameter(description = "페이지 번호 (0부터 시작)") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "페이지 크기") @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         List<User> paged = users.stream()
                 .skip((long) page * size)
                 .limit(size)
@@ -84,10 +87,8 @@ public class UserController {
         );
     }
 
-    @Operation(summary = "현재 유저 조회", description = "Authorization 헤더의 토큰으로 현재 유저를 조회합니다")
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(
-            @Parameter(description = "Bearer 토큰", example = "Bearer my-token")
             @RequestHeader("Authorization") String authorization) {
         String token = authorization.replace("Bearer ", "");
         return ResponseEntity.ok(
@@ -95,13 +96,10 @@ public class UserController {
         );
     }
 
-    @Operation(summary = "유저 상세 조회", description = "ID로 유저 상세 정보를 조회합니다")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 ID")
-    })
+    // TODO: @Operation 애노테이션을 추가하세요
+    // TODO: @ApiResponses 로 200(조회 성공)과 400(잘못된 ID) 응답을 문서화하세요
     @GetMapping("/{id}/detail")
-    public ResponseEntity<User> getUserDetail(@Parameter(description = "유저 ID") @PathVariable Long id) {
+    public ResponseEntity<User> getUserDetail(@PathVariable Long id) {
         if (id <= 0) {
             return ResponseEntity.badRequest().build();
         }
@@ -112,8 +110,8 @@ public class UserController {
 
     // ========== POST ==========
 
-    @Operation(summary = "유저 생성", description = "새로운 유저를 생성합니다")
-    @ApiResponse(responseCode = "201", description = "생성 성공")
+    // TODO: @Operation 애노테이션을 추가하세요
+    // TODO: @ApiResponse 로 201(생성 성공) 응답을 문서화하세요
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User request) {
         User newUser = new User(idGenerator.getAndIncrement(), request.name(), request.email());
@@ -125,15 +123,10 @@ public class UserController {
 
     // ========== PUT ==========
 
-    @Operation(summary = "유저 수정", description = "기존 유저 정보를 수정합니다")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "수정 성공"),
-            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음")
-    })
+    // TODO: @Operation 애노테이션을 추가하세요
+    // TODO: @ApiResponses 로 200(수정 성공)과 404(유저를 찾을 수 없음) 응답을 문서화하세요
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(
-            @Parameter(description = "유저 ID") @PathVariable Long id,
-            @RequestBody User request) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User request) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).id().equals(id)) {
                 User updated = new User(id, request.name(), request.email());
@@ -146,13 +139,10 @@ public class UserController {
 
     // ========== DELETE ==========
 
-    @Operation(summary = "유저 삭제", description = "유저를 삭제합니다")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음")
-    })
+    // TODO: @Operation 애노테이션을 추가하세요
+    // TODO: @ApiResponses 로 204(삭제 성공)과 404(유저를 찾을 수 없음) 응답을 문서화하세요
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         boolean removed = users.removeIf(u -> u.id().equals(id));
         if (removed) {
             return ResponseEntity.noContent().build();
