@@ -37,15 +37,16 @@ public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    // 커스텀 메트릭: 유저 생성 횟수 카운터
-    private final Counter userCreateCounter;
-
-    public UserController(MeterRegistry meterRegistry) {
-        this.userCreateCounter = Counter.builder("user.created.count")
-                .description("유저 생성 횟수")
-                .tag("controller", "UserController")
-                .register(meterRegistry);
-    }
+    // TODO: Counter 타입의 userCreateCounter 필드를 선언하세요
+    // TODO: 생성자에서 MeterRegistry 를 주입받아 Counter 를 등록하세요
+    // 힌트:
+    // private final Counter userCreateCounter;
+    // public UserController(MeterRegistry meterRegistry) {
+    //     this.userCreateCounter = Counter.builder("user.created.count")
+    //             .description("유저 생성 횟수")
+    //             .tag("controller", "UserController")
+    //             .register(meterRegistry);
+    // }
 
     private final List<User> users = new ArrayList<>(List.of(
             new User(1L, "홍길동", "hong@example.com"),
@@ -143,8 +144,8 @@ public class UserController {
         log.info("유저 생성 요청 - name: {}, email: {}", request.name(), request.email());
         User newUser = new User(idGenerator.getAndIncrement(), request.name(), request.email());
         users.add(newUser);
-        userCreateCounter.increment();
-        log.info("유저 생성 완료 - id: {}, 총 생성 횟수: {}", newUser.id(), userCreateCounter.count());
+        // TODO: userCreateCounter.increment() 로 카운터를 증가시키세요
+        log.info("유저 생성 완료 - id: {}", newUser.id());
         return ResponseEntity
                 .created(URI.create("/users/" + newUser.id()))
                 .body(newUser);
