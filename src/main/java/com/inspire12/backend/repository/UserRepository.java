@@ -1,20 +1,27 @@
 package com.inspire12.backend.repository;
 
-import com.inspire12.backend.dto.User;
+import com.inspire12.backend.entity.UserEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-// Before: 모든 CRUD 메서드를 직접 선언
-// After : CrudRepository<User, Long> 을 상속하면 기본 CRUD 는 자동 포함
+// Before: 우리가 만든 CrudRepository<User, Long> 을 상속
+// After : Spring Data JPA 의 JpaRepository<UserEntity, Long> 을 상속
 //
-// 비교: Spring Data JPA 에서는 아래처럼 쓴다
-//   public interface UserRepository extends JpaRepository<User, Long> { ... }
+// JpaRepository 를 extends 하면:
+// - findAll(), findById(), save(), deleteById() 등 기본 CRUD 자동 제공
+// - 구현 클래스(MemoryUserRepository)를 만들 필요 없음! Spring 이 자동 생성
+// - 메서드 이름만으로 쿼리 자동 생성 (Query Method)
 //
-// extends 만으로 findAll, findById, save, deleteById 등이 제공되고,
-// 추가 메서드만 여기에 선언하면 된다
-public interface UserRepository extends CrudRepository<User, Long> {
+// 비교:
+//   이전 단계 (직접 구현)          →  JPA (자동 구현)
+//   CrudRepository<User, Long>    →  JpaRepository<UserEntity, Long>
+//   MemoryUserRepository (직접)    →  Spring Data JPA 가 프록시로 자동 생성
+//   findByNameContaining (직접)    →  메서드 이름으로 쿼리 자동 생성
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     // 커스텀 쿼리 메서드: 이름으로 검색
-    // Spring Data JPA 에서는 메서드 이름만으로 쿼리가 자동 생성됨
-    List<User> findByNameContaining(String name);
+    // Spring Data JPA 가 메서드 이름을 분석해서 SQL 을 자동 생성함
+    // → SELECT * FROM users WHERE name LIKE '%keyword%'
+    List<UserEntity> findByNameContaining(String name);
 }

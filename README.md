@@ -144,9 +144,21 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - 우리가 만든 것: `UserRepository extends CrudRepository<User, Long>`
   - Spring Data JPA: `UserRepository extends JpaRepository<UserEntity, Long>`
 
-### Step 12. Spring Data JPA + SQLite (예정)
+### Step 12. Spring Data JPA + SQLite
 - **branch:** `layered/jpa`
-- JPA + SQLite 의존성 추가, Entity 정의, JPA Repository 로 교체
+- `spring-boot-starter-data-jpa` + SQLite JDBC + Hibernate Community Dialects 추가
+- `UserEntity` JPA 엔티티 클래스 생성
+  - `@Entity`, `@Table`, `@Id`, `@GeneratedValue`
+  - JPA Entity (class) vs DTO (record) 비교
+- `UserRepository extends JpaRepository<UserEntity, Long>` 로 교체
+  - `CrudRepository`, `MemoryUserRepository` 삭제 (Spring Data JPA 가 자동 구현)
+  - `findByNameContaining` 쿼리 메서드 유지
+- `UserService` 에 Entity ↔ DTO 변환 로직 추가
+  - `@Transactional(readOnly = true)` / `@Transactional` 적용
+- `data.sql` 로 초기 데이터 삽입
+- 비교 포인트:
+  - Before (이전 단계): `UserRepository extends CrudRepository<User, Long>` + `MemoryUserRepository` 직접 구현
+  - After (JPA): `UserRepository extends JpaRepository<UserEntity, Long>` + 구현체 자동 생성
 
 ### Step 13. 외부 API 연동 (예정)
 - **branch:** `feature/naver-shopping`
