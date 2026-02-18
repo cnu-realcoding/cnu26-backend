@@ -94,18 +94,34 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - `org.springframework` → INFO
   - `org.hibernate` → WARN
 
-### Step 8. 데이터베이스 연동 (예정)
+### Step 8. Spring Profile
+- **branch:** `web/profile`
+- 프로필별 설정 파일 분리
+  - `application.properties` : 공통 설정 + `spring.profiles.active=dev`
+  - `application-dev.properties` : 개발 환경 (port 8080, DEBUG 로그)
+  - `application-prod.properties` : 운영 환경 (port 80, INFO/WARN 로그)
+- `logback-spring.xml` 에서 `<springProfile>` 로 프로필별 Appender 분기
+  - dev: 콘솔만, DEBUG
+  - prod: 콘솔 + 롤링 파일, WARN
+- `SystemController` : 현재 프로필 조회, 로그 레벨 테스트 API
+- 실행 방법: `./gradlew bootRun --args='--spring.profiles.active=prod'`
+
+### Step 9. Actuator & Metric (예정)
+- **branch:** `web/metric`
+- Spring Boot Actuator 설정, 헬스 체크, 메트릭 엔드포인트
+
+### Step 10. 데이터베이스 연동 (예정)
 - **branch:** `db/start`
 - H2 / JPA 설정, Entity, Repository
 
-### Step 9. 유저 기능 완성 (예정)
+### Step 11. 유저 기능 완성 (예정)
 - **branch:** `feature/user`
 - 회원가입, 로그인, Service 계층 분리
 
-### Step 10. 외부 API 연동 (예정)
+### Step 12. 외부 API 연동 (예정)
 - **branch:** `feature/naver-shopping`
 - 네이버 쇼핑 API 연동, RestClient 사용
 
-### Step 11. 통합 (예정)
+### Step 13. 통합 (예정)
 - **branch:** `feature/shopping-mall`
 - 유저 기능 + 쇼핑 기능 통합

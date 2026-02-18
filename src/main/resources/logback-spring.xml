@@ -6,16 +6,13 @@
     <property name="LOG_FILE" value="application"/>
 
     <!-- ========== 콘솔 출력 (Console Appender) ========== -->
-    <!-- 개발 시 터미널에서 로그 확인용 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- 패턴: 시간 [스레드] 로그레벨 로거이름 - 메시지 -->
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
 
     <!-- ========== 파일 출력 (File Appender) ========== -->
-    <!-- 로그를 파일에 저장 -->
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>${LOG_DIR}/${LOG_FILE}.log</file>
         <encoder>
@@ -24,44 +21,48 @@
     </appender>
 
     <!-- ========== 롤링 파일 (Rolling File Appender) ========== -->
-    <!-- 파일 크기 또는 날짜 기준으로 로그 파일을 분리 -->
     <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${LOG_FILE}-rolling.log</file>
         <encoder>
-            <!-- JSON 스타일 포맷으로 변경해보기 -->
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
-
-        <!-- 롤링 정책: 날짜 + 파일 크기 기반 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <!-- 파일명 패턴: 날짜별 + 인덱스 -->
             <fileNamePattern>${LOG_DIR}/archived/${LOG_FILE}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <!-- 단일 파일 최대 크기 -->
             <maxFileSize>10MB</maxFileSize>
-            <!-- 최대 보관 일수 -->
             <maxHistory>30</maxHistory>
-            <!-- 전체 로그 최대 용량 -->
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
     </appender>
 
-    <!-- ========== 로그 레벨 설정 ========== -->
+    <!-- ========== 프로필별 로그 설정 ========== -->
+    <!-- springProfile 태그로 프로필에 따라 다른 로그 설정 적용 -->
 
-    <!-- 우리 애플리케이션: DEBUG 레벨부터 출력 -->
-    <logger name="com.inspire12.backend" level="DEBUG"/>
+    <!-- DEV: 콘솔만 사용, DEBUG 레벨 -->
+    <springProfile name="dev">
+        <logger name="com.inspire12.backend" level="DEBUG"/>
+        <logger name="org.springframework.web" level="DEBUG"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
 
-    <!-- Spring 프레임워크: INFO 레벨부터 출력 (너무 많은 로그 방지) -->
-    <logger name="org.springframework" level="INFO"/>
+    <!-- PROD: 콘솔 + 롤링 파일, INFO 레벨 -->
+    <springProfile name="prod">
+        <logger name="com.inspire12.backend" level="INFO"/>
+        <logger name="org.springframework" level="WARN"/>
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ROLLING_FILE"/>
+        </root>
+    </springProfile>
 
-    <!-- SQL 관련 (향후 JPA 사용 시): DEBUG 로 변경하면 쿼리 확인 가능 -->
-    <logger name="org.hibernate" level="WARN"/>
-
-    <!-- ========== 루트 로거 ========== -->
-    <!-- 기본 로그 레벨과 사용할 Appender 지정 -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
-        <appender-ref ref="ROLLING_FILE"/>
-    </root>
+    <!-- 프로필 미지정 시 기본 설정 -->
+    <springProfile name="default">
+        <logger name="com.inspire12.backend" level="DEBUG"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
 
 </configuration>
