@@ -3,6 +3,8 @@ package com.inspire12.backend.controller;
 import com.inspire12.backend.dto.User;
 import com.inspire12.backend.exception.InvalidRequestException;
 import com.inspire12.backend.exception.UserNotFoundException;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
@@ -34,6 +36,16 @@ import java.util.concurrent.atomic.AtomicLong;
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
+    // 커스텀 메트릭: 유저 생성 횟수 카운터
+    private final Counter userCreateCounter;
+
+    public UserController(MeterRegistry meterRegistry) {
+        this.userCreateCounter = Counter.builder("user.created.count")
+                .description("유저 생성 횟수")
+                .tag("controller", "UserController")
+                .register(meterRegistry);
+    }
 
     private final List<User> users = new ArrayList<>(List.of(
             new User(1L, "홍길동", "hong@example.com"),
@@ -131,7 +143,8 @@ public class UserController {
         log.info("유저 생성 요청 - name: {}, email: {}", request.name(), request.email());
         User newUser = new User(idGenerator.getAndIncrement(), request.name(), request.email());
         users.add(newUser);
-        log.info("유저 생성 완료 - id: {}", newUser.id());
+        userCreateCounter.increment();
+        log.info("유저 생성 완료 - id: {}, 총 생성 횟수: {}", newUser.id(), userCreateCounter.count());
         return ResponseEntity
                 .created(URI.create("/users/" + newUser.id()))
                 .body(newUser);

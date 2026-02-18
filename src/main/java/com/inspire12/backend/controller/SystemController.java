@@ -66,4 +66,18 @@ public class SystemController {
                 "activeProfile", profile
         );
     }
+
+    // Actuator 주요 엔드포인트 안내
+    @Operation(summary = "Actuator 엔드포인트 안내", description = "주요 Actuator 엔드포인트 목록을 반환합니다")
+    @GetMapping("/actuator-guide")
+    public Map<String, String> actuatorGuide() {
+        return Map.of(
+                "전체 목록", "/actuator",
+                "헬스 체크", "/actuator/health",
+                "앱 정보", "/actuator/info",
+                "메트릭 목록", "/actuator/metrics",
+                "커스텀 메트릭", "/actuator/metrics/user.created.count",
+                "HTTP 요청 메트릭", "/actuator/metrics/http.server.requests"
+        );
+    }
 }

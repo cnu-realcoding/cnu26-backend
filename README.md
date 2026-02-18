@@ -106,9 +106,20 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
 - `SystemController` : 현재 프로필 조회, 로그 레벨 테스트 API
 - 실행 방법: `./gradlew bootRun --args='--spring.profiles.active=prod'`
 
-### Step 9. Actuator & Metric (예정)
+### Step 9. Actuator & Metric
 - **branch:** `web/metric`
-- Spring Boot Actuator 설정, 헬스 체크, 메트릭 엔드포인트
+- `spring-boot-starter-actuator` 의존성 추가
+- Actuator 엔드포인트
+  - `/actuator/health` : 헬스 체크 (커스텀 Health Indicator 포함)
+  - `/actuator/metrics` : 메트릭 목록
+  - `/actuator/metrics/http.server.requests` : HTTP 요청 메트릭
+  - `/actuator/metrics/user.created.count` : 커스텀 메트릭
+- 프로필별 Actuator 노출 범위
+  - dev: 모든 엔드포인트 노출, health 상세 표시
+  - prod: health, info 만 노출
+- 커스텀 구현
+  - `UserHealthIndicator` : 커스텀 헬스 체크
+  - `Counter` (Micrometer) : 유저 생성 횟수 카운터
 
 ### Step 10. 데이터베이스 연동 (예정)
 - **branch:** `db/start`
