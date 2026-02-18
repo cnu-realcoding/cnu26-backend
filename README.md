@@ -160,9 +160,18 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - Before (이전 단계): `UserRepository extends CrudRepository<User, Long>` + `MemoryUserRepository` 직접 구현
   - After (JPA): `UserRepository extends JpaRepository<UserEntity, Long>` + 구현체 자동 생성
 
-### Step 13. 외부 API 연동 (예정)
-- **branch:** `feature/naver-shopping`
-- 네이버 쇼핑 API 연동, RestClient 사용
+### Step 13. 외부 API 연동 - 네이버 쇼핑 검색
+- **branch:** `shop/naver-api`
+- `RestClient` 를 사용한 외부 API 호출
+  - Spring 6.1+ 에서 도입된 동기 HTTP 클라이언트
+  - `RestTemplate` 의 후속, 더 간결한 API
+- 네이버 쇼핑 검색 API (`https://openapi.naver.com/v1/search/shop.json`)
+  - `X-Naver-Client-Id`, `X-Naver-Client-Secret` 헤더 인증
+  - `@Value` 로 설정값 주입, 환경변수 폴백 지원
+- 새로운 파일 구조:
+  - `ShoppingController` : `GET /shop/search?query=키워드&display=10`
+  - `NaverShoppingService` : RestClient 로 네이버 API 호출
+  - `NaverShoppingResponse`, `ShoppingItem` : 응답 DTO (record)
 
 ### Step 14. 통합 (예정)
 - **branch:** `feature/shopping-mall`
