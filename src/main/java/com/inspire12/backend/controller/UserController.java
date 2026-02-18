@@ -88,8 +88,11 @@ public class UserController {
         );
     }
 
-    // Before: 토큰을 그대로 문자열로 반환 (인증 없음)
-    // After : JWT 토큰을 검증하고, 토큰에서 userId 를 추출하여 실제 유저 정보 반환
+    // TODO: JWT 토큰을 검증하고 실제 유저 정보를 반환하도록 변경하세요
+    // 1. "Bearer " 접두어 제거
+    // 2. JwtUtil.validateToken() 으로 토큰 검증
+    // 3. JwtUtil.getUserIdFromToken() 으로 userId 추출
+    // 4. userService.getUserById(userId) 로 실제 유저 조회
     @Operation(summary = "현재 유저 조회", description = "JWT 토큰으로 현재 로그인된 유저를 조회합니다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -113,8 +116,10 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // 간단한 로그인: userId 를 받아 JWT 토큰을 발급
-    // 실무에서는 이메일+비밀번호 검증 후 토큰 발급
+    // TODO: 로그인 엔드포인트를 구현하세요
+    // 1. Request Body 에서 userId 추출
+    // 2. 유저 존재 확인
+    // 3. JwtUtil.generateToken(userId) 로 JWT 토큰 발급
     @Operation(summary = "로그인 (토큰 발급)", description = "유저 ID 로 JWT 토큰을 발급합니다")
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, Long> request) {

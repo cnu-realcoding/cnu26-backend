@@ -31,25 +31,27 @@ public class JwtUtil {
 
     // userId 를 담은 JWT 토큰을 생성
     public static String generateToken(Long userId) {
-        // 1. Header: 알고리즘과 토큰 타입
+        // TODO 1: Header JSON 을 작성하세요
+        // 힌트: {"alg":"HS256","typ":"JWT"}
         String header = """
                 {"alg":"HS256","typ":"JWT"}""";
 
-        // 2. Payload: 사용자 정보와 시간 정보
+        // TODO 2: Payload JSON 을 작성하세요
+        // 힌트: sub(사용자 ID), iat(발급시간), exp(만료시간)
         long now = Instant.now().getEpochSecond();
         long exp = now + EXPIRATION_SECONDS;
         String payload = """
                 {"sub":"%d","iat":%d,"exp":%d}""".formatted(userId, now, exp);
 
-        // 3. Base64URL 인코딩
+        // TODO 3: Header 와 Payload 를 Base64URL 인코딩하세요
         String encodedHeader = encodeBase64Url(header);
         String encodedPayload = encodeBase64Url(payload);
 
-        // 4. Signature: HMAC-SHA256(header.payload, secretKey)
+        // TODO 4: header.payload 를 HMAC-SHA256 으로 서명하세요
         String dataToSign = encodedHeader + "." + encodedPayload;
         String signature = sign(dataToSign);
 
-        // 5. 최종 JWT: header.payload.signature
+        // TODO 5: 최종 JWT (header.payload.signature) 를 반환하세요
         return encodedHeader + "." + encodedPayload + "." + signature;
     }
 
@@ -63,14 +65,14 @@ public class JwtUtil {
                 return false;
             }
 
-            // 서명 검증: 다시 서명해서 일치하는지 확인
+            // TODO 6: 서명을 다시 계산하여 일치하는지 확인하세요
             String dataToSign = parts[0] + "." + parts[1];
             String expectedSignature = sign(dataToSign);
             if (!expectedSignature.equals(parts[2])) {
                 return false;
             }
 
-            // 만료 시간 검증
+            // TODO 7: 만료 시간(exp)이 현재 시간보다 미래인지 확인하세요
             String payload = decodeBase64Url(parts[1]);
             long exp = extractLongFromJson(payload, "exp");
             return Instant.now().getEpochSecond() < exp;
@@ -85,6 +87,7 @@ public class JwtUtil {
     // JWT payload 에서 사용자 ID (sub) 를 추출
     public static Long getUserIdFromToken(String token) {
         try {
+            // TODO 8: payload 를 디코딩하고 "sub" 필드에서 userId 를 추출하세요
             String[] parts = token.split("\\.");
             String payload = decodeBase64Url(parts[1]);
             String sub = extractStringFromJson(payload, "sub");
