@@ -173,6 +173,18 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - `NaverShoppingService` : RestClient 로 네이버 API 호출
   - `NaverShoppingResponse`, `ShoppingItem` : 응답 DTO (record)
 
-### Step 14. 통합 (예정)
+### Step 14. JWT 인증 (외부 라이브러리 없이)
+- **branch:** `shop/auth`
+- 순수 Java 로 JWT 구현 (`JwtUtil` 유틸리티 클래스)
+  - JWT 구조 이해: `header.payload.signature`
+  - `Base64URL` 인코딩 + `HMAC-SHA256` 서명
+  - 토큰 생성 (`generateToken`), 검증 (`validateToken`), 파싱 (`getUserIdFromToken`)
+- `POST /users/login` : userId 로 JWT 토큰 발급
+- `GET /users/me` 개선: JWT 토큰 검증 → userId 추출 → 실제 유저 정보 반환
+- Before vs After 비교:
+  - Before: 토큰을 문자열로 그대로 반환 (인증 없음)
+  - After: JWT 서명 검증 + 만료 시간 체크 → 실제 유저 조회
+
+### Step 15. 통합 (예정)
 - **branch:** `feature/shopping-mall`
 - 유저 기능 + 쇼핑 기능 통합

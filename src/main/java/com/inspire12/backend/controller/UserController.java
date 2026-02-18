@@ -2,6 +2,7 @@ package com.inspire12.backend.controller;
 
 import com.inspire12.backend.dto.User;
 import com.inspire12.backend.service.UserService;
+import com.inspire12.backend.util.JwtUtil;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,15 +88,44 @@ public class UserController {
         );
     }
 
-    @Operation(summary = "현재 유저 조회", description = "Authorization 헤더의 토큰으로 현재 유저를 조회합니다")
+    // Before: 토큰을 그대로 문자열로 반환 (인증 없음)
+    // After : JWT 토큰을 검증하고, 토큰에서 userId 를 추출하여 실제 유저 정보 반환
+    @Operation(summary = "현재 유저 조회", description = "JWT 토큰으로 현재 로그인된 유저를 조회합니다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "401", description = "유효하지 않은 토큰")
+    })
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(
-            @Parameter(description = "Bearer 토큰", example = "Bearer my-token")
+            @Parameter(description = "Bearer JWT 토큰", example = "Bearer eyJ...")
             @RequestHeader("Authorization") String authorization) {
+        // "Bearer " 접두어 제거
         String token = authorization.replace("Bearer ", "");
-        return ResponseEntity.ok(
-                new User(1L, "홍길동 (token: " + token + ")", "hong@example.com")
-        );
+
+        // JWT 토큰 검증
+        if (!JwtUtil.validateToken(token)) {
+            return ResponseEntity.status(401).build();
+        }
+
+        // 토큰에서 userId 추출 → DB 에서 유저 조회
+        Long userId = JwtUtil.getUserIdFromToken(token);
+        User user = userService.getUserById(userId);
+        return ResponseEntity.ok(user);
+    }
+
+    // 간단한 로그인: userId 를 받아 JWT 토큰을 발급
+    // 실무에서는 이메일+비밀번호 검증 후 토큰 발급
+    @Operation(summary = "로그인 (토큰 발급)", description = "유저 ID 로 JWT 토큰을 발급합니다")
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, Long> request) {
+        Long userId = request.get("userId");
+
+        // 유저 존재 여부 확인
+        userService.getUserById(userId);
+
+        // JWT 토큰 생성
+        String token = JwtUtil.generateToken(userId);
+        return ResponseEntity.ok(Map.of("token", token));
     }
 
     @Operation(summary = "유저 상세 조회", description = "ID로 유저 상세 정보를 조회합니다")
