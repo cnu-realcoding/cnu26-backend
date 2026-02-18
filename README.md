@@ -133,14 +133,25 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - Service: 비즈니스 로직, 예외 던지기, 로깅
   - Repository: 데이터 CRUD (저장소 추상화)
 
-### Step 11. 데이터베이스 연동 (예정)
-- **branch:** `layered/db`
-- H2 / JPA 설정, Entity, JPA Repository 로 교체
+### Step 11. 제네릭 Repository 패턴 (JPA 이해를 위한 중간 단계)
+- **branch:** `layered/generic-repository`
+- `CrudRepository<T, ID>` 제네릭 인터페이스 도입
+  - `findAll`, `findById`, `save`, `deleteById`, `existsById`, `count`
+  - 어떤 엔티티든 기본 CRUD 를 제공하는 공통 인터페이스
+- `UserRepository extends CrudRepository<User, Long>`
+  - 기본 CRUD 는 상속, 커스텀 메서드(`findByNameContaining`)만 추가 선언
+- 비교 포인트: 이 패턴이 Spring Data JPA 의 `JpaRepository` 와 동일한 구조
+  - 우리가 만든 것: `UserRepository extends CrudRepository<User, Long>`
+  - Spring Data JPA: `UserRepository extends JpaRepository<UserEntity, Long>`
 
-### Step 12. 외부 API 연동 (예정)
+### Step 12. Spring Data JPA + SQLite (예정)
+- **branch:** `layered/jpa`
+- JPA + SQLite 의존성 추가, Entity 정의, JPA Repository 로 교체
+
+### Step 13. 외부 API 연동 (예정)
 - **branch:** `feature/naver-shopping`
 - 네이버 쇼핑 API 연동, RestClient 사용
 
-### Step 13. 통합 (예정)
+### Step 14. 통합 (예정)
 - **branch:** `feature/shopping-mall`
 - 유저 기능 + 쇼핑 기능 통합
