@@ -1,6 +1,11 @@
 package com.inspire12.backend.controller;
 
 import com.inspire12.backend.dto.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Tag(name = "User", description = "유저 API")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -32,42 +38,40 @@ public class UserController {
 
     // ========== GET ==========
 
-    // 1. 가장 단순한 GET 요청 - 문자열 응답
+    @Operation(summary = "인사 메시지", description = "단순 문자열 응답을 반환합니다")
     @GetMapping("/hello")
     public String hello() {
         return "Hello, User!";
     }
 
-    // 2. 유저 목록 조회 - JSON 배열 응답
+    @Operation(summary = "유저 목록 조회", description = "전체 유저 목록을 반환합니다")
     @GetMapping
     public List<User> getUsers() {
         return users;
     }
 
-    // 3. PathVariable - 경로에서 값 추출
+    @Operation(summary = "유저 단건 조회", description = "ID로 유저를 조회합니다")
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
+    public User getUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
         return users.stream()
                 .filter(u -> u.id().equals(id))
                 .findFirst()
                 .orElse(null);
     }
 
-    // 4. RequestParam - 쿼리 파라미터
-    // GET /users/search?name=홍길동
+    @Operation(summary = "유저 검색", description = "이름으로 유저를 검색합니다")
     @GetMapping("/search")
-    public List<User> searchUsers(@RequestParam String name) {
+    public List<User> searchUsers(@Parameter(description = "검색할 이름") @RequestParam String name) {
         return users.stream()
                 .filter(u -> u.name().contains(name))
                 .toList();
     }
 
-    // 5. RequestParam 기본값 + 페이징
-    // GET /users/page?page=0&size=10
+    @Operation(summary = "유저 목록 (페이징)", description = "페이지 단위로 유저를 조회합니다")
     @GetMapping("/page")
     public Map<String, Object> getUsersWithPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @Parameter(description = "페이지 번호 (0부터 시작)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "페이지 크기") @RequestParam(defaultValue = "10") int size) {
         List<User> paged = users.stream()
                 .skip((long) page * size)
                 .limit(size)
@@ -80,19 +84,24 @@ public class UserController {
         );
     }
 
-    // 6. RequestHeader - 요청 헤더 읽기
-    // curl -H "Authorization: Bearer my-token" localhost:8080/users/me
+    @Operation(summary = "현재 유저 조회", description = "Authorization 헤더의 토큰으로 현재 유저를 조회합니다")
     @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<User> getCurrentUser(
+            @Parameter(description = "Bearer 토큰", example = "Bearer my-token")
+            @RequestHeader("Authorization") String authorization) {
         String token = authorization.replace("Bearer ", "");
         return ResponseEntity.ok(
                 new User(1L, "홍길동 (token: " + token + ")", "hong@example.com")
         );
     }
 
-    // 7. ResponseEntity - HTTP 상태코드 직접 제어
+    @Operation(summary = "유저 상세 조회", description = "ID로 유저 상세 정보를 조회합니다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 ID")
+    })
     @GetMapping("/{id}/detail")
-    public ResponseEntity<User> getUserDetail(@PathVariable Long id) {
+    public ResponseEntity<User> getUserDetail(@Parameter(description = "유저 ID") @PathVariable Long id) {
         if (id <= 0) {
             return ResponseEntity.badRequest().build();
         }
@@ -103,8 +112,8 @@ public class UserController {
 
     // ========== POST ==========
 
-    // 8. POST - RequestBody 로 JSON 을 받아 유저 생성
-    // curl -X POST -H "Content-Type: application/json" -d '{"name":"박민수","email":"park@example.com"}' localhost:8080/users
+    @Operation(summary = "유저 생성", description = "새로운 유저를 생성합니다")
+    @ApiResponse(responseCode = "201", description = "생성 성공")
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User request) {
         User newUser = new User(idGenerator.getAndIncrement(), request.name(), request.email());
@@ -116,10 +125,15 @@ public class UserController {
 
     // ========== PUT ==========
 
-    // 9. PUT - 유저 정보 전체 수정
-    // curl -X PUT -H "Content-Type: application/json" -d '{"name":"홍길동2","email":"hong2@example.com"}' localhost:8080/users/1
+    @Operation(summary = "유저 수정", description = "기존 유저 정보를 수정합니다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "수정 성공"),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음")
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User request) {
+    public ResponseEntity<User> updateUser(
+            @Parameter(description = "유저 ID") @PathVariable Long id,
+            @RequestBody User request) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).id().equals(id)) {
                 User updated = new User(id, request.name(), request.email());
@@ -132,10 +146,13 @@ public class UserController {
 
     // ========== DELETE ==========
 
-    // 10. DELETE - 유저 삭제
-    // curl -X DELETE localhost:8080/users/1
+    @Operation(summary = "유저 삭제", description = "유저를 삭제합니다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@Parameter(description = "유저 ID") @PathVariable Long id) {
         boolean removed = users.removeIf(u -> u.id().equals(id));
         if (removed) {
             return ResponseEntity.noContent().build();

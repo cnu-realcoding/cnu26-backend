@@ -54,18 +54,29 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - `PUT /users/{id}` : 유저 정보 전체 수정
   - `DELETE /users/{id}` : 유저 삭제 (204 No Content)
 
-### Step 5. 데이터베이스 연동 (예정)
+### Step 5. Swagger (OpenAPI) 문서화
+- **branch:** `web/swagger`
+- `springdoc-openapi-starter-webmvc-ui` 의존성 추가
+- Swagger 애노테이션 적용
+  - `@Tag` : 컨트롤러 그룹 이름
+  - `@Operation` : API 설명 (summary, description)
+  - `@Parameter` : 파라미터 설명
+  - `@ApiResponse` / `@ApiResponses` : 응답 상태코드 설명
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- OpenAPI JSON: http://localhost:8080/v3/api-docs
+
+### Step 6. 데이터베이스 연동 (예정)
 - **branch:** `db/start`
 - H2 / JPA 설정, Entity, Repository
 
-### Step 6. 유저 기능 완성 (예정)
+### Step 7. 유저 기능 완성 (예정)
 - **branch:** `feature/user`
 - 회원가입, 로그인, Service 계층 분리
 
-### Step 7. 외부 API 연동 (예정)
+### Step 8. 외부 API 연동 (예정)
 - **branch:** `feature/naver-shopping`
 - 네이버 쇼핑 API 연동, RestClient 사용
 
-### Step 8. 통합 (예정)
+### Step 9. 통합 (예정)
 - **branch:** `feature/shopping-mall`
 - 유저 기능 + 쇼핑 기능 통합

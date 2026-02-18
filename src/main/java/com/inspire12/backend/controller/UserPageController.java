@@ -1,20 +1,19 @@
 package com.inspire12.backend.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// @RestController = @Controller + @ResponseBody
-// 모든 메서드의 반환값이 HTTP 응답 본문(body)으로 직접 전송됨
-// produces 로 Content-Type 을 지정할 수 있음
+@Tag(name = "User Page", description = "유저 HTML 페이지 API")
 @RestController
 @RequestMapping("/pages")
 public class UserPageController {
 
-    // 1. HTML 문자열 직접 반환
-    // Content-Type: text/html
+    @Operation(summary = "유저 목록 HTML", description = "유저 목록을 HTML 로 반환합니다")
     @GetMapping(value = "/users", produces = MediaType.TEXT_HTML_VALUE)
     public String usersPage() {
         return """
@@ -31,8 +30,7 @@ public class UserPageController {
                 """;
     }
 
-    // 2. 같은 데이터를 JSON 으로 반환 (기본 동작)
-    // Content-Type: application/json
+    @Operation(summary = "유저 목록 JSON", description = "유저 목록을 JSON 으로 반환합니다")
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public String usersJson() {
         return """
@@ -44,8 +42,7 @@ public class UserPageController {
                 """;
     }
 
-    // 3. PathVariable + HTML 응답
-    // Content-Type: text/html
+    @Operation(summary = "유저 상세 HTML", description = "유저 상세 정보를 HTML 로 반환합니다")
     @GetMapping(value = "/users/{id}", produces = MediaType.TEXT_HTML_VALUE)
     public String userDetailPage(@PathVariable Long id) {
         return """
