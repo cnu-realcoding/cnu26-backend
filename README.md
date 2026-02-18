@@ -46,9 +46,13 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - `GET /pages/users` : HTML / JSON content negotiation
   - `GET /pages/users/{id}` : HTML 상세 페이지
 
-### Step 4. POST 요청 다루기 (예정)
+### Step 4. POST, PUT, DELETE 요청 다루기
 - **branch:** `web/post`
-- 유저 생성, RequestBody, 유효성 검증
+- 인메모리 유저 저장소로 CRUD 동작 확인
+- `UserController` 확장
+  - `POST /users` : RequestBody 로 유저 생성 (201 Created)
+  - `PUT /users/{id}` : 유저 정보 전체 수정
+  - `DELETE /users/{id}` : 유저 삭제 (204 No Content)
 
 ### Step 5. 데이터베이스 연동 (예정)
 - **branch:** `db/start`
