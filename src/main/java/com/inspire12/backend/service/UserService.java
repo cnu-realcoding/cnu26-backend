@@ -7,6 +7,8 @@ import com.inspire12.backend.exception.UserNotFoundException;
 import com.inspire12.backend.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,11 +33,15 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getAllUsers() {
-        List<User> users = userRepository.findAll().stream()
-                .map(this::toDto)
-                .toList();
-        log.info("유저 목록 조회 - 총 {}명", users.size());
+    // Before: List<User> getAllUsers() - 전체 데이터를 한번에 반환
+    // After : Page<User> getAllUsers(Pageable) - 페이지 단위로 반환
+    //
+    // Page.map() 을 사용하면 Page<Entity> → Page<DTO> 변환이 간편함
+    // (totalElements, totalPages, number 등 페이징 메타데이터가 자동 유지됨)
+    public Page<User> getAllUsers(Pageable pageable) {
+        Page<User> users = userRepository.findAll(pageable).map(this::toDto);
+        log.info("유저 목록 조회 - 페이지: {}, 크기: {}, 총 {}명",
+                pageable.getPageNumber(), pageable.getPageSize(), users.getTotalElements());
         return users;
     }
 
@@ -53,12 +59,12 @@ public class UserService {
         return getUserById(id);
     }
 
-    public List<User> searchByName(String name) {
+    // Before: List<User> searchByName(String name) - 전체 검색 결과 반환
+    // After : Page<User> searchByName(String name, Pageable) - 페이지 단위 반환
+    public Page<User> searchByName(String name, Pageable pageable) {
         log.info("유저 검색 - name: {}", name);
-        List<User> result = userRepository.findByNameContaining(name).stream()
-                .map(this::toDto)
-                .toList();
-        log.debug("유저 검색 결과 - {}건", result.size());
+        Page<User> result = userRepository.findByNameContaining(name, pageable).map(this::toDto);
+        log.debug("유저 검색 결과 - 페이지: {}, 총 {}건", pageable.getPageNumber(), result.getTotalElements());
         return result;
     }
 

@@ -1,5 +1,7 @@
 package com.inspire12.backend.controller;
 
+import com.inspire12.backend.dto.LoginRequest;
+import com.inspire12.backend.dto.LoginResponse;
 import com.inspire12.backend.dto.User;
 import com.inspire12.backend.service.UserService;
 import com.inspire12.backend.util.JwtUtil;
@@ -10,21 +12,21 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Map;
 
 // Controller: HTTP 요청/응답만 담당 (얇은 계층)
 // 비즈니스 로직은 Service 에 위임
@@ -52,10 +54,17 @@ public class UserController {
         return "Hello, User!";
     }
 
-    @Operation(summary = "유저 목록 조회", description = "전체 유저 목록을 반환합니다")
+    // Before: List<User> getUsers() - 전체 목록 반환
+    // After : Page<User> getUsers(Pageable) - 페이지 단위 반환
+    //
+    // Spring MVC 가 쿼리 파라미터를 자동으로 Pageable 객체로 변환
+    // 예: GET /users?page=0&size=10&sort=name,asc
+    //   → PageRequest.of(0, 10, Sort.by("name").ascending())
+    @Operation(summary = "유저 목록 조회", description = "페이지 단위로 유저 목록을 반환합니다. " +
+            "page, size, sort 파라미터를 지원합니다. 예: ?page=0&size=10&sort=name,asc")
     @GetMapping
-    public List<User> getUsers() {
-        return userService.getAllUsers();
+    public Page<User> getUsers(Pageable pageable) {
+        return userService.getAllUsers(pageable);
     }
 
     @Operation(summary = "유저 단건 조회", description = "ID로 유저를 조회합니다")
@@ -64,68 +73,45 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @Operation(summary = "유저 검색", description = "이름으로 유저를 검색합니다")
+    // Before: List<User> searchUsers(String name) - 전체 검색 결과 반환
+    // After : Page<User> searchUsers(String name, Pageable) - 페이지 단위 반환
+    @Operation(summary = "유저 검색", description = "이름으로 유저를 검색합니다. " +
+            "page, size, sort 파라미터를 지원합니다.")
     @GetMapping("/search")
-    public List<User> searchUsers(@Parameter(description = "검색할 이름") @RequestParam String name) {
-        return userService.searchByName(name);
+    public Page<User> searchUsers(
+            @Parameter(description = "검색할 이름") @RequestParam String name,
+            Pageable pageable) {
+        return userService.searchByName(name, pageable);
     }
 
-    @Operation(summary = "유저 목록 (페이징)", description = "페이지 단위로 유저를 조회합니다")
-    @GetMapping("/page")
-    public Map<String, Object> getUsersWithPage(
-            @Parameter(description = "페이지 번호 (0부터 시작)") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "페이지 크기") @RequestParam(defaultValue = "10") int size) {
-        List<User> all = userService.getAllUsers();
-        List<User> paged = all.stream()
-                .skip((long) page * size)
-                .limit(size)
-                .toList();
-        return Map.of(
-                "page", page,
-                "size", size,
-                "totalElements", all.size(),
-                "content", paged
-        );
-    }
+    // GET /users/page 는 삭제
+    // Before: stream().skip().limit() 로 수동 페이징
+    // After : GET /users?page=0&size=10 으로 Pageable 이 자동 처리
+    // → 별도의 /page 엔드포인트가 불필요해짐
 
-    // Before: 토큰을 그대로 문자열로 반환 (인증 없음)
-    // After : JWT 토큰을 검증하고, 토큰에서 userId 를 추출하여 실제 유저 정보 반환
+    // Before: Controller 에서 직접 JWT 파싱
+    // After : JwtAuthInterceptor 가 검증 → userId 를 request attribute 로 전달
     @Operation(summary = "현재 유저 조회", description = "JWT 토큰으로 현재 로그인된 유저를 조회합니다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "401", description = "유효하지 않은 토큰")
     })
     @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser(
-            @Parameter(description = "Bearer JWT 토큰", example = "Bearer eyJ...")
-            @RequestHeader("Authorization") String authorization) {
-        // "Bearer " 접두어 제거
-        String token = authorization.replace("Bearer ", "");
-
-        // JWT 토큰 검증
-        if (!JwtUtil.validateToken(token)) {
-            return ResponseEntity.status(401).build();
-        }
-
-        // 토큰에서 userId 추출 → DB 에서 유저 조회
-        Long userId = JwtUtil.getUserIdFromToken(token);
-        User user = userService.getUserById(userId);
-        return ResponseEntity.ok(user);
+    public User getCurrentUser(@RequestAttribute("userId") Long userId) {
+        return userService.getUserById(userId);
     }
 
     // 간단한 로그인: userId 를 받아 JWT 토큰을 발급
     // 실무에서는 이메일+비밀번호 검증 후 토큰 발급
     @Operation(summary = "로그인 (토큰 발급)", description = "유저 ID 로 JWT 토큰을 발급합니다")
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, Long> request) {
-        Long userId = request.get("userId");
-
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         // 유저 존재 여부 확인
-        userService.getUserById(userId);
+        userService.getUserById(request.userId());
 
         // JWT 토큰 생성
-        String token = JwtUtil.generateToken(userId);
-        return ResponseEntity.ok(Map.of("token", token));
+        String token = JwtUtil.generateToken(request.userId());
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 
     @Operation(summary = "유저 상세 조회", description = "ID로 유저 상세 정보를 조회합니다")

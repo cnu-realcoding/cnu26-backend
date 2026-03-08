@@ -185,6 +185,13 @@ Spring Boot 기반 백엔드 강의 프로젝트입니다.
   - Before: 토큰을 문자열로 그대로 반환 (인증 없음)
   - After: JWT 서명 검증 + 만료 시간 체크 → 실제 유저 조회
 
-### Step 15. 통합 (예정)
-- **branch:** `feature/shopping-mall`
-- 유저 기능 + 쇼핑 기능 통합
+### Step 15. Pageable 적용 (Spring Data JPA 페이징)
+- **branch:** `feature/pageable`
+- Spring Data JPA 의 `Pageable` / `Page<T>` 활용
+  - `GET /users` → `Pageable` 파라미터 추가, `Page<User>` 반환
+  - `GET /users/search` → `Pageable` 파라미터 추가, `Page<User>` 반환
+  - `GET /users/page` → 수동 페이징 제거 (Pageable 로 대체)
+- Before vs After 비교:
+  - Before: `stream().skip().limit()` 로 전체 데이터를 메모리에 로드 후 수동 페이징
+  - After: DB 레벨에서 `LIMIT`/`OFFSET` + `COUNT` 쿼리 자동 생성
+- API 사용: `GET /users?page=0&size=10&sort=name,asc`
