@@ -1,7 +1,5 @@
 package com.inspire12.backend.controller;
 
-import com.inspire12.backend.dto.LoginRequest;
-import com.inspire12.backend.dto.LoginResponse;
 import com.inspire12.backend.dto.User;
 import com.inspire12.backend.service.UserService;
 import com.inspire12.backend.util.JwtUtil;
@@ -12,8 +10,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+// TODO: Page, Pageable import 를 추가하세요
+// import org.springframework.data.domain.Page;
+// import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 // Controller: HTTP 요청/응답만 담당 (얇은 계층)
 // 비즈니스 로직은 Service 에 위임
@@ -54,17 +54,14 @@ public class UserController {
         return "Hello, User!";
     }
 
-    // Before: List<User> getUsers() - 전체 목록 반환
-    // After : Page<User> getUsers(Pageable) - 페이지 단위 반환
-    //
-    // Spring MVC 가 쿼리 파라미터를 자동으로 Pageable 객체로 변환
+    // TODO: 반환 타입을 List<User> → Page<User> 로 변경하고, Pageable 파라미터를 추가하세요
+    // 힌트: Spring MVC 가 쿼리 파라미터를 자동으로 Pageable 객체로 변환합니다
     // 예: GET /users?page=0&size=10&sort=name,asc
-    //   → PageRequest.of(0, 10, Sort.by("name").ascending())
     @Operation(summary = "유저 목록 조회", description = "페이지 단위로 유저 목록을 반환합니다. " +
             "page, size, sort 파라미터를 지원합니다. 예: ?page=0&size=10&sort=name,asc")
     @GetMapping
-    public Page<User> getUsers(Pageable pageable) {
-        return userService.getAllUsers(pageable);
+    public List<User> getUsers() {
+        return userService.getAllUsers();
     }
 
     @Operation(summary = "유저 단건 조회", description = "ID로 유저를 조회합니다")
@@ -73,15 +70,14 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    // Before: List<User> searchUsers(String name) - 전체 검색 결과 반환
-    // After : Page<User> searchUsers(String name, Pageable) - 페이지 단위 반환
+    // TODO: 검색 API 도 Page 로 변경하세요
+    // 힌트: Pageable 파라미터를 추가하고, 반환 타입을 Page<User> 로 변경
     @Operation(summary = "유저 검색", description = "이름으로 유저를 검색합니다. " +
             "page, size, sort 파라미터를 지원합니다.")
     @GetMapping("/search")
-    public Page<User> searchUsers(
-            @Parameter(description = "검색할 이름") @RequestParam String name,
-            Pageable pageable) {
-        return userService.searchByName(name, pageable);
+    public List<User> searchUsers(
+            @Parameter(description = "검색할 이름") @RequestParam String name) {
+        return userService.searchByName(name);
     }
 
     // GET /users/page 는 삭제

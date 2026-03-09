@@ -3,8 +3,9 @@ package com.inspire12.backend.repository;
 import com.inspire12.backend.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+// TODO: Page, Pageable import 를 추가하세요
+// import org.springframework.data.domain.Page;
+// import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -33,9 +34,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     // → SELECT * FROM users WHERE name LIKE '%keyword%'
     List<UserEntity> findByNameContaining(String name);
 
-    // Pageable 버전: 반환 타입을 Page 로 변경하면
-    // Spring Data JPA 가 COUNT 쿼리까지 자동 생성
-    // → SELECT * FROM users WHERE name LIKE '%keyword%' LIMIT ? OFFSET ?
-    // → SELECT COUNT(*) FROM users WHERE name LIKE '%keyword%'
-    Page<UserEntity> findByNameContaining(String name, Pageable pageable);
+    // TODO: Pageable 을 지원하는 findByNameContaining 메서드를 추가하세요
+    // 힌트: 반환 타입을 Page<UserEntity> 로, 파라미터에 Pageable 을 추가하면
+    //       Spring Data JPA 가 LIMIT/OFFSET + COUNT 쿼리를 자동 생성합니다
+    // Page<UserEntity> findByNameContaining(????, ????);
 }

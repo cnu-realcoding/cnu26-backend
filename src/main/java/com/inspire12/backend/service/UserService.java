@@ -7,8 +7,9 @@ import com.inspire12.backend.exception.UserNotFoundException;
 import com.inspire12.backend.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+// TODO: Page, Pageable import 를 추가하세요
+// import org.springframework.data.domain.Page;
+// import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,15 +34,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // Before: List<User> getAllUsers() - 전체 데이터를 한번에 반환
-    // After : Page<User> getAllUsers(Pageable) - 페이지 단위로 반환
-    //
-    // Page.map() 을 사용하면 Page<Entity> → Page<DTO> 변환이 간편함
-    // (totalElements, totalPages, number 등 페이징 메타데이터가 자동 유지됨)
-    public Page<User> getAllUsers(Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable).map(this::toDto);
-        log.info("유저 목록 조회 - 페이지: {}, 크기: {}, 총 {}명",
-                pageable.getPageNumber(), pageable.getPageSize(), users.getTotalElements());
+    // TODO: List<User> → Page<User> 로 변경하고, Pageable 파라미터를 추가하세요
+    // 힌트: userRepository.findAll(pageable) 은 Page<UserEntity> 를 반환합니다
+    //       Page.map() 을 사용하면 Page<Entity> → Page<DTO> 변환이 가능합니다
+    public List<User> getAllUsers() {
+        List<User> users = userRepository.findAll().stream().map(this::toDto).toList();
+        log.info("유저 목록 조회 - 총 {}명", users.size());
         return users;
     }
 
@@ -59,12 +57,12 @@ public class UserService {
         return getUserById(id);
     }
 
-    // Before: List<User> searchByName(String name) - 전체 검색 결과 반환
-    // After : Page<User> searchByName(String name, Pageable) - 페이지 단위 반환
-    public Page<User> searchByName(String name, Pageable pageable) {
+    // TODO: 검색 메서드도 Page 로 변경하세요
+    // 힌트: Repository 에 Pageable 파라미터가 있는 findByNameContaining 메서드를 사용하세요
+    public List<User> searchByName(String name) {
         log.info("유저 검색 - name: {}", name);
-        Page<User> result = userRepository.findByNameContaining(name, pageable).map(this::toDto);
-        log.debug("유저 검색 결과 - 페이지: {}, 총 {}건", pageable.getPageNumber(), result.getTotalElements());
+        List<User> result = userRepository.findByNameContaining(name).stream().map(this::toDto).toList();
+        log.debug("유저 검색 결과 - 총 {}건", result.size());
         return result;
     }
 
