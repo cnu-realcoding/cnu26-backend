@@ -41,3 +41,5 @@ logs/
 
 ### SQLite DB ###
 data/
+
+.env.dev

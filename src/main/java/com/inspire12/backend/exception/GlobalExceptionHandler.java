@@ -25,7 +25,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
-    // 2. InvalidRequestException → 400
+    // 2. UnauthorizedException → 401
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException e) {
+        log.warn("UnauthorizedException: {}", e.getMessage());
+        ErrorResponse body = ErrorResponse.of(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Unauthorized",
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    // 3. InvalidRequestException → 400
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ErrorResponse> handleInvalidRequest(InvalidRequestException e) {
         log.warn("InvalidRequestException: {}", e.getMessage());
