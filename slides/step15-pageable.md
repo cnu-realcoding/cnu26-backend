@@ -4,8 +4,8 @@ theme: default
 paginate: true
 ---
 
-# Step 15: Pageable 적용
-## Spring Data JPA 페이징
+# Step 15: Pageable로 페이징 처리
+## 데이터를 필요한 만큼만 조회하기
 
 **CNU26 Real Coding 2026**
 브랜치: `feature/pageable`

@@ -1,4 +1,4 @@
-# Step 14: JWT 인증 (외부 라이브러리 없이)
+# Step 14: JWT 인증 직접 구현하기
 
 > **브랜치**: `shop/auth`
 > **실습 브랜치**: `shop/auth-practice`

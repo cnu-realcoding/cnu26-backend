@@ -4,7 +4,7 @@ theme: default
 paginate: true
 ---
 
-# Step 8: Spring Profile
+# Step 8: Spring Profile로 환경 분리
 
 **CNU26 Real Coding 2026**
 

@@ -4,7 +4,7 @@ theme: default
 paginate: true
 ---
 
-# Step 7: 로깅 (Logback)
+# Step 7: 로깅 설정과 Logback 활용
 
 **CNU26 Real Coding 2026**
 

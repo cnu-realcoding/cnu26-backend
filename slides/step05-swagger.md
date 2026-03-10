@@ -4,7 +4,7 @@ theme: default
 paginate: true
 ---
 
-# Step 5: Swagger (OpenAPI)
+# Step 5: Swagger로 API 문서 자동화
 
 **CNU26 Real Coding 2026 - Spring Boot Backend**
 

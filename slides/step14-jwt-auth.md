@@ -4,8 +4,8 @@ theme: default
 paginate: true
 ---
 
-# Step 14: JWT 인증
-## 외부 라이브러리 없이 직접 구현
+# Step 14: JWT 인증 직접 구현하기
+## 라이브러리 없이 만드는 토큰 인증
 
 **CNU26 Real Coding 2026**
 브랜치: `shop/auth`

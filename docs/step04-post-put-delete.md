@@ -1,4 +1,4 @@
-# Step 4: POST, PUT, DELETE
+# Step 4: Post, Put, Delete 요청 처리
 
 > **브랜치:** `web/post`
 > **실습 브랜치:** `web/post-practice`

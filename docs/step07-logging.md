@@ -1,4 +1,4 @@
-# Step 7: 로깅 (Logback)
+# Step 7: 로깅 설정과 Logback 활용
 
 > **브랜치:** `web/logging` | **실습 브랜치:** `web/logging-practice`
 

@@ -4,8 +4,8 @@ theme: default
 paginate: true
 ---
 
-# Step 10: Layered Architecture
-## Service & Repository 계층 분리
+# Step 10: 계층 분리
+## Service와 Repository로 구조화
 
 **CNU26 Real Coding 2026**
 브랜치: `layered/service-repository`

@@ -4,7 +4,7 @@ theme: default
 paginate: true
 ---
 
-# Step 9: Actuator & Metric
+# Step 9: Actuator와 Metric으로 모니터링
 
 **CNU26 Real Coding 2026**
 

@@ -1,4 +1,4 @@
-# Step 10: Layered Architecture - Service & Repository
+# Step 10: 계층 분리 - Service와 Repository
 
 > **브랜치**: `layered/service-repository`
 > **실습 브랜치**: `layered/service-repository-practice`

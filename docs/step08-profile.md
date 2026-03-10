@@ -1,4 +1,4 @@
-# Step 8: Spring Profile
+# Step 8: Spring Profile로 환경 분리
 
 > **브랜치:** `web/profile` | **실습 브랜치:** `web/profile-practice`
 

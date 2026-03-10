@@ -4,8 +4,8 @@ theme: default
 paginate: true
 ---
 
-# Step 16: CORS 설정
-## Cross-Origin Resource Sharing
+# Step 16: CORS 설정으로 프론트엔드 연동하기
+## 다른 출처 간 요청 허용하기
 
 **CNU26 Real Coding 2026**
 브랜치: `feature/cors`

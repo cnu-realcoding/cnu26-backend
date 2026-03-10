@@ -1,4 +1,4 @@
-# Step 16: CORS 설정 (Cross-Origin Resource Sharing)
+# Step 16: CORS 설정으로 프론트엔드 연동하기
 
 > **브랜치**: `feature/cors`
 > **실습 브랜치**: `feature/cors-practice`

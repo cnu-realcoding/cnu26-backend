@@ -4,7 +4,7 @@ theme: default
 paginate: true
 ---
 
-# Step 4: POST, PUT, DELETE
+# Step 4: Post, Put, Delete 요청 처리
 
 **CNU26 Real Coding 2026 - Spring Boot Backend**
 

@@ -1,4 +1,4 @@
-# Step 15: Pageable 적용 (Spring Data JPA 페이징)
+# Step 15: Pageable로 페이징 처리
 
 > **브랜치**: `feature/pageable`
 > **실습 브랜치**: `feature/pageable-practice`

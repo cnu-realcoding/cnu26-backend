@@ -1,4 +1,4 @@
-# Step 5: Swagger (OpenAPI)
+# Step 5: Swagger로 API 문서 자동화
 
 > **브랜치:** `web/swagger`
 > **실습 브랜치:** `web/swagger-practice`

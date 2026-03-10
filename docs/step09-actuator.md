@@ -1,4 +1,4 @@
-# Step 9: Actuator & Metric
+# Step 9: Actuator와 Metric으로 모니터링
 
 > **브랜치:** `web/metric` | **실습 브랜치:** `web/metric-practice`
 

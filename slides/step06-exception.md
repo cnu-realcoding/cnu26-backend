@@ -4,7 +4,7 @@ theme: default
 paginate: true
 ---
 
-# Step 6: 예외 처리와 Global Exception Handler
+# Step 6: 예외 처리와 글로벌 예외 핸들러
 
 **CNU26 Real Coding 2026**
 
