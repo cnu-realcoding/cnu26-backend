@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Step 6: 예외 처리와 Global Exception Handler</title>
+<title>Step 6: 예외 처리와 글로벌 예외 핸들러</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/solarized.css">
@@ -197,7 +197,7 @@
   <div class="slides">
     <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n----\n$">
       <textarea data-template>
-# Step 6: 예외 처리와 Global Exception Handler
+# Step 6: 예외 처리와 글로벌 예외 핸들러
 
 **CNU26 Real Coding 2026**
 
@@ -232,7 +232,7 @@ Client → Controller → Service에서 예외 발생!
 
 ---
 
-# Before: Controller에서 직접 처리
+# 변경 전: Controller에서 직접 처리
 
 ```java
 // 모든 메서드에 if-else가 반복됨
@@ -252,7 +252,7 @@ public ResponseEntity<?> getUser(@PathVariable Long id) {
 
 ---
 
-# After: 예외 던지기 + Handler
+# 변경 후: 예외 던지기 + Handler
 
 ```java
 // Controller는 깔끔!
@@ -323,7 +323,7 @@ public record ErrorResponse(
 
 ---
 
-# GlobalExceptionHandler (1/2)
+# 글로벌 예외 핸들러 (1/2)
 
 ```java
 @RestControllerAdvice  // 모든 Controller에 적용
@@ -345,7 +345,7 @@ public class GlobalExceptionHandler {
 
 ---
 
-# GlobalExceptionHandler (2/2)
+# 글로벌 예외 핸들러 (2/2)
 
 ```java
     @ExceptionHandler(InvalidRequestException.class)

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Step 4: POST, PUT, DELETE</title>
+<title>Step 4: Post, Put, Delete 요청 처리</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/solarized.css">
@@ -197,7 +197,7 @@
   <div class="slides">
     <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n----\n$">
       <textarea data-template>
-# Step 4: POST, PUT, DELETE
+# Step 4: Post, Put, Delete 요청 처리
 
 **CNU26 Real Coding 2026 - Spring Boot Backend**
 
@@ -227,7 +227,7 @@
 
 ---
 
-## Before vs After: 핵심 변화
+## 변경 전 vs 변경 후
 
 **Before (web/get):** 하드코딩된 데이터
 
@@ -273,7 +273,7 @@ public ResponseEntity<User> createUser(@RequestBody User request) {
 
 ---
 
-## POST - 유저 생성 (201 Created)
+## Post - 유저 생성 (201 Created)
 
 ```java
 @PostMapping
@@ -295,7 +295,7 @@ public ResponseEntity<User> createUser(@RequestBody User request) {
 
 ---
 
-## PUT - 유저 수정 (200 OK)
+## Put - 유저 수정 (200 OK)
 
 ```java
 @PutMapping("/{id}")
@@ -318,7 +318,7 @@ public ResponseEntity<User> updateUser(
 
 ---
 
-## DELETE - 유저 삭제 (204 No Content)
+## Delete - 유저 삭제 (204 No Content)
 
 ```java
 @DeleteMapping("/{id}")

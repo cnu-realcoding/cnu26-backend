@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Step 14: JWT 인증</title>
+<title>Step 14: JWT 인증 직접 구현하기</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/solarized.css">
@@ -197,8 +197,8 @@
   <div class="slides">
     <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n----\n$">
       <textarea data-template>
-# Step 14: JWT 인증
-## 외부 라이브러리 없이 직접 구현
+# Step 14: JWT 인증 직접 구현하기
+## 라이브러리 없이 만드는 토큰 인증
 
 **CNU26 Real Coding 2026**
 브랜치: `shop/auth`
@@ -256,7 +256,7 @@ eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzA4MTI3MDU2fQ.X5Z_abc123
 
 ---
 
-## JwtUtil - 토큰 생성
+## JwtUtil로 토큰 생성하기
 
 ```java
 public class JwtUtil {
@@ -285,7 +285,7 @@ public class JwtUtil {
 
 ---
 
-## JwtUtil - 토큰 검증
+## JwtUtil로 토큰 검증하기
 
 ```java
 public static boolean validateToken(String token) {
@@ -313,7 +313,7 @@ public static boolean validateToken(String token) {
 
 ---
 
-## JwtUtil - HMAC-SHA256 서명
+## JwtUtil의 HMAC-SHA256 서명 원리
 
 ```java
 private static String sign(String data) {
@@ -365,7 +365,7 @@ curl -X POST http://localhost:8080/users/login \
 
 ---
 
-## GET /users/me - Before vs After
+## Get /users/me 변경 전 vs 변경 후
 
 ### Before (토큰을 그대로 반환)
 ```java

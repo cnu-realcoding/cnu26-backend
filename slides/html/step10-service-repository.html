@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Step 10: Layered Architecture</title>
+<title>Step 10: 계층 분리</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/solarized.css">
@@ -197,8 +197,8 @@
   <div class="slides">
     <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n----\n$">
       <textarea data-template>
-# Step 10: Layered Architecture
-## Service & Repository 계층 분리
+# Step 10: 계층 분리
+## Service와 Repository로 구조화
 
 **CNU26 Real Coding 2026**
 브랜치: `layered/service-repository`
@@ -413,7 +413,7 @@ Spring이 **의존성 주입 (DI)** 으로 조립해 준다
 
 ---
 
-## ConcurrentHashMap vs HashMap
+## ConcurrentHashMap과 HashMap의 차이
 
 ```java
 // 위험: 여러 요청이 동시에 들어오면 데이터 깨짐
