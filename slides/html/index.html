@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNU26 Real Coding 2026 - Spring Boot Backend</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #fdf6e3;
+    color: #586e75;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  header h1 {
+    font-size: 2rem;
+    color: #2563eb;
+    margin-bottom: 0.5rem;
+  }
+
+  header p {
+    color: #93a1a1;
+    font-size: 1.1rem;
+  }
+
+  .hint {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #93a1a1;
+    font-size: 0.85rem;
+  }
+
+  .hint kbd {
+    background: #eee8d5;
+    border: 1px solid #d3cbb7;
+    border-radius: 3px;
+    padding: 0.1em 0.5em;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+  }
+
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .card {
+    display: flex;
+    align-items: center;
+    background: #eee8d5;
+    border-radius: 12px;
+    padding: 1.1rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: transform 0.15s, box-shadow 0.15s;
+    border: 1px solid #d3cbb7;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37,99,235,0.15);
+    border-color: #2563eb;
+    background: #fdf6e3;
+  }
+
+  .step-num {
+    background: #2563eb;
+    color: white;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.3em 0.8em;
+    border-radius: 6px;
+    min-width: 70px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .step-title {
+    flex: 1;
+    font-weight: 500;
+    font-size: 1rem;
+    margin-left: 1rem;
+    color: #073642;
+  }
+
+  .step-branch {
+    font-family: 'JetBrains Mono', 'D2Coding', monospace;
+    font-size: 0.78rem;
+    color: #2aa198;
+    background: #fdf6e3;
+    padding: 0.25em 0.7em;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 3rem;
+    color: #93a1a1;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    .card { flex-wrap: wrap; gap: 0.5rem; }
+    .step-branch { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>CNU26 Real Coding 2026</h1>
+    <p>Spring Boot Backend - Lecture Slides</p>
+  </header>
+  <div class="hint">
+    Slides: <kbd>&larr;</kbd> <kbd>&rarr;</kbd> navigate
+    &middot; <kbd>?</kbd> keyboard shortcuts
+    &middot; <kbd>Esc</kbd> overview
+    &middot; <kbd>F</kbd> fullscreen
+  </div>
+  <div class="cards">
+        <a href="step01-project-init.html" class="card">
+          <span class="step-num">Step 01</span>
+          <span class="step-title">Step 1: 프로젝트 초기 설정</span>
+          <span class="step-branch">main</span>
+        </a>
+        <a href="step02-web-dependency.html" class="card">
+          <span class="step-num">Step 02</span>
+          <span class="step-title">Step 2: Web 의존성 추가</span>
+          <span class="step-branch">web/start</span>
+        </a>
+        <a href="step03-get-request.html" class="card">
+          <span class="step-num">Step 03</span>
+          <span class="step-title">Step 3: GET 요청/응답 다루기</span>
+          <span class="step-branch">web/get</span>
+        </a>
+        <a href="step04-post-put-delete.html" class="card">
+          <span class="step-num">Step 04</span>
+          <span class="step-title">Step 4: POST, PUT, DELETE</span>
+          <span class="step-branch">web/post</span>
+        </a>
+        <a href="step05-swagger.html" class="card">
+          <span class="step-num">Step 05</span>
+          <span class="step-title">Step 5: Swagger (OpenAPI)</span>
+          <span class="step-branch">web/swagger</span>
+        </a>
+        <a href="step06-exception.html" class="card">
+          <span class="step-num">Step 06</span>
+          <span class="step-title">Step 6: 예외 처리와 Global Exception Handler</span>
+          <span class="step-branch">web/exception</span>
+        </a>
+        <a href="step07-logging.html" class="card">
+          <span class="step-num">Step 07</span>
+          <span class="step-title">Step 7: 로깅 (Logback)</span>
+          <span class="step-branch">web/logging</span>
+        </a>
+        <a href="step08-profile.html" class="card">
+          <span class="step-num">Step 08</span>
+          <span class="step-title">Step 8: Spring Profile</span>
+          <span class="step-branch">web/profile</span>
+        </a>
+        <a href="step09-actuator.html" class="card">
+          <span class="step-num">Step 09</span>
+          <span class="step-title">Step 9: Actuator & Metric</span>
+          <span class="step-branch">web/actuator</span>
+        </a>
+        <a href="step10-service-repository.html" class="card">
+          <span class="step-num">Step 10</span>
+          <span class="step-title">Step 10: Layered Architecture</span>
+          <span class="step-branch">layered/service-repository</span>
+        </a>
+        <a href="step11-generic-repository.html" class="card">
+          <span class="step-num">Step 11</span>
+          <span class="step-title">Step 11: 제네릭 Repository 패턴</span>
+          <span class="step-branch">layered/generic-repository</span>
+        </a>
+        <a href="step12-jpa.html" class="card">
+          <span class="step-num">Step 12</span>
+          <span class="step-title">Step 12: Spring Data JPA + SQLite</span>
+          <span class="step-branch">layered/jpa</span>
+        </a>
+        <a href="step13-naver-api.html" class="card">
+          <span class="step-num">Step 13</span>
+          <span class="step-title">Step 13: 외부 API 연동</span>
+          <span class="step-branch">shop/naver-api</span>
+        </a>
+        <a href="step14-jwt-auth.html" class="card">
+          <span class="step-num">Step 14</span>
+          <span class="step-title">Step 14: JWT 인증</span>
+          <span class="step-branch">shop/auth</span>
+        </a>
+  </div>
+  <footer>
+    <p>Built with Reveal.js</p>
+  </footer>
+</div>
+</body>
+</html>

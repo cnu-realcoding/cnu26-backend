@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 4: POST, PUT, DELETE</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/solarized.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root {
+    --r-heading-font: 'Noto Sans KR', sans-serif;
+    --r-main-font: 'Noto Sans KR', sans-serif;
+    --r-code-font: 'JetBrains Mono', 'D2Coding', monospace;
+    --r-heading-color: #2563eb;
+    --r-link-color: #2563eb;
+    --r-link-color-hover: #1d4ed8;
+    --accent: #2563eb;
+    --accent-dark: #1e40af;
+  }
+
+  .reveal h1 {
+    font-size: 1.8em;
+    color: var(--accent);
+  }
+  .reveal h2 {
+    font-size: 1.3em;
+    color: var(--accent-dark);
+    border-bottom: 3px solid var(--accent);
+    padding-bottom: 0.3em;
+    margin-bottom: 0.5em;
+  }
+  .reveal h3 {
+    font-size: 1.05em;
+    color: var(--accent-dark);
+  }
+
+  /* Code blocks */
+  .reveal pre {
+    font-size: 0.65em;
+    max-height: 480px;
+    overflow: auto;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 8px;
+  }
+  .reveal pre code {
+    max-height: 480px;
+    padding: 16px;
+    line-height: 1.4;
+  }
+  .reveal code {
+    font-family: 'JetBrains Mono', 'D2Coding', monospace;
+  }
+  .reveal p code, .reveal li code, .reveal td code {
+    background: #eee8d5;
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #cb4b16;
+  }
+
+  /* Tables */
+  .reveal table {
+    font-size: 0.7em;
+    border-collapse: collapse;
+    margin: 0.5em auto;
+  }
+  .reveal table th {
+    background: var(--accent);
+    color: white;
+    padding: 0.5em 1em;
+    font-weight: 500;
+  }
+  .reveal table td {
+    padding: 0.4em 1em;
+    border-bottom: 1px solid #d3cbb7;
+  }
+  .reveal table tr:nth-child(even) {
+    background: #eee8d5;
+  }
+
+  /* Blockquote */
+  .reveal blockquote {
+    background: #eee8d5;
+    border-left: 4px solid var(--accent);
+    padding: 0.8em 1.2em;
+    font-size: 0.85em;
+    border-radius: 0 8px 8px 0;
+    width: 90%;
+    text-align: left;
+    box-shadow: none;
+  }
+
+  /* Lists */
+  .reveal ul, .reveal ol {
+    font-size: 0.85em;
+    text-align: left;
+    display: block;
+  }
+  .reveal li {
+    margin-bottom: 0.3em;
+    line-height: 1.5;
+  }
+
+  /* Typography */
+  .reveal strong {
+    color: var(--accent-dark);
+  }
+  .reveal del {
+    opacity: 0.5;
+  }
+
+  /* Layout */
+  .reveal .slides section {
+    text-align: left;
+    padding: 20px 40px;
+  }
+  .reveal .slides section h1,
+  .reveal .slides section h2 {
+    text-align: left;
+  }
+
+  /* Slide number */
+  .reveal .slide-number {
+    font-size: 0.6em;
+    color: #93a1a1;
+    right: 16px;
+    bottom: 42px;
+  }
+
+  /* Controls */
+  .reveal .controls {
+    color: var(--accent);
+  }
+
+  /* Progress bar */
+  .reveal .progress {
+    color: var(--accent);
+    height: 4px;
+  }
+
+  /* Step navigation bar */
+  .step-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    background: #073642;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.75rem;
+    z-index: 100;
+    box-shadow: 0 -1px 4px rgba(0,0,0,0.15);
+  }
+  .step-nav a {
+    color: #93a1a1;
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .step-nav a:hover {
+    color: #fdf6e3;
+    background: #586e75;
+  }
+  .step-nav .nav-center {
+    color: #839496;
+  }
+  .step-nav .nav-center a {
+    color: #2aa198;
+  }
+  .step-nav .nav-center a:hover {
+    color: #fdf6e3;
+  }
+  .step-nav .shortcut-hint {
+    color: #586e75;
+    font-size: 0.65rem;
+  }
+
+  /* Adjust reveal progress bar above nav */
+  .reveal .progress {
+    bottom: 36px;
+  }
+</style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+    <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n----\n$">
+      <textarea data-template>
+# Step 4: POST, PUT, DELETE
+
+**CNU26 Real Coding 2026 - Spring Boot Backend**
+
+브랜치: `web/post` | 실습: `web/post-practice`
+
+---
+
+## 학습 목표
+
+- HTTP 메서드별 의미(GET/POST/PUT/DELETE)를 이해한다
+- `@RequestBody`로 JSON 요청을 수신한다
+- 적절한 HTTP 상태코드를 반환한다
+- 인메모리 CRUD를 구현한다
+
+---
+
+## HTTP 메서드와 CRUD
+
+| HTTP 메서드 | CRUD | 의미 | 상태코드 |
+|---|---|---|---|
+| **GET** | Read | 조회 | 200 OK |
+| **POST** | Create | 생성 | **201 Created** |
+| **PUT** | Update | 전체 수정 | 200 OK |
+| **DELETE** | Delete | 삭제 | **204 No Content** |
+
+> 각 메서드에 맞는 **의미 있는 상태코드**를 반환하는 것이 REST API의 기본
+
+---
+
+## Before vs After: 핵심 변화
+
+**Before (web/get):** 하드코딩된 데이터
+
+```java
+@GetMapping
+public List<User> getUsers() {
+    return List.of(new User(1L, "홍길동", "hong@example.com")); // 불변!
+}
+```
+
+**After (web/post):** 인메모리 저장소
+
+```java
+private final List<User> users = new ArrayList<>(List.of(...)); // 가변!
+private final AtomicLong idGenerator = new AtomicLong(4);
+
+@GetMapping
+public List<User> getUsers() {
+    return users;  // 실제 데이터 반환
+}
+```
+
+---
+
+## @RequestBody란?
+
+```
+POST /users
+Content-Type: application/json
+
+{"name": "박민수", "email": "park@example.com"}
+```
+
+```java
+@PostMapping
+public ResponseEntity<User> createUser(@RequestBody User request) {
+    // request.name() → "박민수"
+    // request.email() → "park@example.com"
+}
+```
+
+> Jackson이 **JSON을 Java 객체로 자동 변환**한다
+
+---
+
+## POST - 유저 생성 (201 Created)
+
+```java
+@PostMapping
+public ResponseEntity<User> createUser(@RequestBody User request) {
+    User newUser = new User(
+            idGenerator.getAndIncrement(),  // 새 ID 발급
+            request.name(),
+            request.email()
+    );
+    users.add(newUser);
+    return ResponseEntity
+            .created(URI.create("/users/" + newUser.id()))  // 201
+            .body(newUser);
+}
+```
+
+- `201 Created` + `Location` 헤더로 생성된 리소스 위치 반환
+- `@RequestBody`로 JSON 본문 수신
+
+---
+
+## PUT - 유저 수정 (200 OK)
+
+```java
+@PutMapping("/{id}")
+public ResponseEntity<User> updateUser(
+        @PathVariable Long id,
+        @RequestBody User request) {
+    for (int i = 0; i < users.size(); i++) {
+        if (users.get(i).id().equals(id)) {
+            User updated = new User(id, request.name(), request.email());
+            users.set(i, updated);
+            return ResponseEntity.ok(updated);      // 200 OK
+        }
+    }
+    return ResponseEntity.notFound().build();        // 404 Not Found
+}
+```
+
+- `@PathVariable` = **누구를**, `@RequestBody` = **어떻게** 수정
+- record는 불변이므로 새 객체 생성 후 교체
+
+---
+
+## DELETE - 유저 삭제 (204 No Content)
+
+```java
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    boolean removed = users.removeIf(u -> u.id().equals(id));
+    if (removed) {
+        return ResponseEntity.noContent().build();   // 204 No Content
+    }
+    return ResponseEntity.notFound().build();         // 404 Not Found
+}
+```
+
+- 삭제 성공 시 **본문 없이** 204 반환
+- `ResponseEntity<Void>` = 응답 본문 없음
+
+---
+
+## 상태코드 정리
+
+| 상태코드 | 의미 | 언제 사용? |
+|---|---|---|
+| `200 OK` | 성공 | GET 조회, PUT 수정 |
+| `201 Created` | 생성 완료 | POST 생성 성공 |
+| `204 No Content` | 성공 (본문 없음) | DELETE 삭제 성공 |
+| `400 Bad Request` | 잘못된 요청 | 유효성 검증 실패 |
+| `404 Not Found` | 리소스 없음 | 존재하지 않는 ID |
+
+---
+
+## API 테스트
+
+```bash
+# 생성
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"name":"박민수","email":"park@example.com"}' \
+  http://localhost:8080/users
+
+# 수정
+curl -X PUT -H "Content-Type: application/json" \
+  -d '{"name":"홍길동2","email":"hong2@example.com"}' \
+  http://localhost:8080/users/1
+
+# 삭제
+curl -X DELETE http://localhost:8080/users/1
+
+# 확인
+curl http://localhost:8080/users
+```
+
+---
+
+## CRUD 흐름 한눈에
+
+```
+[클라이언트]                    [서버 - UserController]
+    |                                |
+    |--- POST /users (JSON) -------->|  createUser()  → 201 + 새 유저
+    |--- GET /users ---------------->|  getUsers()    → 200 + 목록
+    |--- GET /users/1 -------------->|  getUser()     → 200 + 유저
+    |--- PUT /users/1 (JSON) ------->|  updateUser()  → 200 + 수정됨
+    |--- DELETE /users/1 ----------->|  deleteUser()   → 204 (본문 없음)
+```
+
+---
+
+## 실습: web/post-practice
+
+```bash
+git checkout web/post-practice
+```
+
+TODO 빈칸을 채워 CRUD를 완성하세요!
+
+**확인 포인트:**
+1. POST 후 GET으로 목록에 추가되었는지 확인
+2. PUT 후 GET으로 수정 반영 확인
+3. DELETE 후 GET으로 삭제 확인
+4. 없는 ID로 PUT/DELETE 시 404 확인
+
+---
+
+## 핵심 정리
+
+> **`@RequestBody`로 JSON을 받아 POST(201), PUT(200), DELETE(204)를 구현하고, 각 HTTP 메서드의 의미에 맞는 상태코드를 반환한다.**
+
+다음 단계: **Step 5 - Swagger (OpenAPI)** (`web/swagger`)
+      </textarea>
+    </section>
+  </div>
+</div>
+
+<!-- Step navigation bar -->
+<div class="step-nav">
+  <div><a href="step03-get-request.html">&larr; Step 03</a></div>
+  <div class="nav-center"><a href="index.html">&#9776; Index</a></div>
+  <div><a href="step05-swagger.html">Step 05 &rarr;</a> <span class="shortcut-hint">&nbsp;&nbsp;?=shortcuts</span></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: true,
+    transition: 'fade',
+    width: 1200,
+    height: 700,
+    margin: 0.04,
+    progress: true,
+    help: true,
+    plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+  });
+</script>
+</body>
+</html>
