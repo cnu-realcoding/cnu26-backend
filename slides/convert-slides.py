@@ -28,6 +28,8 @@ STEP_BRANCHES = {
     "step12": "layered/jpa",
     "step13": "shop/naver-api",
     "step14": "shop/auth",
+    "step15": "feature/pageable",
+    "step16": "feature/cors",
 }
 
 HTML_TEMPLATE = """\
@@ -56,6 +58,9 @@ HTML_TEMPLATE = """\
     --accent-dark: #1e40af;
   }}
 
+  .reveal h1, .reveal h2, .reveal h3 {{
+    text-transform: none;
+  }}
   .reveal h1 {{
     font-size: 1.8em;
     color: var(--accent);
