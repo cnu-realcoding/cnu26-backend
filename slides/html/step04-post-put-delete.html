@@ -23,6 +23,9 @@
     --accent-dark: #1e40af;
   }
 
+  .reveal h1, .reveal h2, .reveal h3 {
+    text-transform: none;
+  }
   .reveal h1 {
     font-size: 1.8em;
     color: var(--accent);
@@ -227,7 +230,7 @@
 
 ---
 
-## 변경 전 vs 변경 후
+## Before vs After: 핵심 변화
 
 **Before (web/get):** 하드코딩된 데이터
 
@@ -273,7 +276,7 @@ public ResponseEntity<User> createUser(@RequestBody User request) {
 
 ---
 
-## Post - 유저 생성 (201 Created)
+## POST - 유저 생성 (201 Created)
 
 ```java
 @PostMapping
@@ -295,7 +298,7 @@ public ResponseEntity<User> createUser(@RequestBody User request) {
 
 ---
 
-## Put - 유저 수정 (200 OK)
+## PUT - 유저 수정 (200 OK)
 
 ```java
 @PutMapping("/{id}")
@@ -318,7 +321,7 @@ public ResponseEntity<User> updateUser(
 
 ---
 
-## Delete - 유저 삭제 (204 No Content)
+## DELETE - 유저 삭제 (204 No Content)
 
 ```java
 @DeleteMapping("/{id}")

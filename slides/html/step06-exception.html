@@ -23,6 +23,9 @@
     --accent-dark: #1e40af;
   }
 
+  .reveal h1, .reveal h2, .reveal h3 {
+    text-transform: none;
+  }
   .reveal h1 {
     font-size: 1.8em;
     color: var(--accent);
@@ -232,7 +235,7 @@ Client → Controller → Service에서 예외 발생!
 
 ---
 
-# 변경 전: Controller에서 직접 처리
+# Before: Controller에서 직접 처리
 
 ```java
 // 모든 메서드에 if-else가 반복됨
@@ -252,7 +255,7 @@ public ResponseEntity<?> getUser(@PathVariable Long id) {
 
 ---
 
-# 변경 후: 예외 던지기 + Handler
+# After: 예외 던지기 + Handler
 
 ```java
 // Controller는 깔끔!
@@ -323,7 +326,7 @@ public record ErrorResponse(
 
 ---
 
-# 글로벌 예외 핸들러 (1/2)
+# GlobalExceptionHandler (1/2)
 
 ```java
 @RestControllerAdvice  // 모든 Controller에 적용
@@ -345,7 +348,7 @@ public class GlobalExceptionHandler {
 
 ---
 
-# 글로벌 예외 핸들러 (2/2)
+# GlobalExceptionHandler (2/2)
 
 ```java
     @ExceptionHandler(InvalidRequestException.class)

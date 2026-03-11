@@ -23,6 +23,9 @@
     --accent-dark: #1e40af;
   }
 
+  .reveal h1, .reveal h2, .reveal h3 {
+    text-transform: none;
+  }
   .reveal h1 {
     font-size: 1.8em;
     color: var(--accent);
@@ -219,7 +222,7 @@
 
 ---
 
-## RestClient로 외부 API 호출하기
+## RestClient - Spring 6.1+ 동기 HTTP 클라이언트
 
 | HTTP 클라이언트 | 도입 시기 | 방식 | 상태 |
 |----------------|----------|------|------|
@@ -263,7 +266,7 @@ Headers:
 
 ---
 
-## DTO를 Record로 정의하기
+## DTO 정의 (record)
 
 ```java
 // 전체 응답 구조
@@ -294,7 +297,7 @@ public record ShoppingItem(
 
 ---
 
-## NaverShoppingService 구현하기
+## NaverShoppingService 구현
 
 ```java
 @Service

@@ -23,6 +23,9 @@
     --accent-dark: #1e40af;
   }
 
+  .reveal h1, .reveal h2, .reveal h3 {
+    text-transform: none;
+  }
   .reveal h1 {
     font-size: 1.8em;
     color: var(--accent);
@@ -413,7 +416,7 @@ Spring이 **의존성 주입 (DI)** 으로 조립해 준다
 
 ---
 
-## ConcurrentHashMap과 HashMap의 차이
+## ConcurrentHashMap vs HashMap
 
 ```java
 // 위험: 여러 요청이 동시에 들어오면 데이터 깨짐

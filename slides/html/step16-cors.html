@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Step 2: Web 의존성 추가</title>
+<title>Step 16: CORS 설정으로 프론트엔드 연동하기</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/solarized.css">
@@ -200,168 +200,201 @@
   <div class="slides">
     <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n----\n$">
       <textarea data-template>
-# Step 2: Web 의존성 추가
+# Step 16: CORS 설정으로 프론트엔드 연동하기
+## 다른 출처 간 요청 허용하기
 
-**CNU26 Real Coding 2026 - Spring Boot Backend**
-
-브랜치: `web/start`
-
----
-
-## 학습 목표
-
-- `spring-boot-starter-web`이 가져오는 것들을 이해한다
-- 내장 톰캣(Embedded Tomcat)이 무엇인지 안다
-- 한 줄 추가 전/후의 차이를 체감한다
+**CNU26 Real Coding 2026**
+브랜치: `feature/cors`
 
 ---
 
-## Before: main 브랜치
+## 문제 상황
 
-```groovy
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    // ... 웹 관련 없음
+프론트엔드(`localhost:3000`)에서 백엔드(`localhost:8080`) 호출 시:
+
+```
+❌ Access to fetch at 'http://localhost:8080/users'
+   from origin 'http://localhost:3000'
+   has been blocked by CORS policy
+```
+
+**브라우저**가 보안을 위해 **다른 Origin** 요청을 차단!
+
+---
+
+## Origin 이란?
+
+Origin = **프로토콜 + 호스트 + 포트**
+
+| URL | Origin |
+|-----|--------|
+| `http://localhost:3000/page` | `http://localhost:3000` |
+| `http://localhost:8080/api` | `http://localhost:8080` |
+
+**포트가 다르면 → 다른 Origin → CORS 필요!**
+
+---
+
+## CORS 동작 원리
+
+서버가 **"이 Origin 은 허용한다"** 고 응답 헤더에 명시
+
+```
+[브라우저] → GET /users
+            Origin: http://localhost:3000
+
+[서버]    ← Access-Control-Allow-Origin: http://localhost:3000
+            ✅ 허용!
+```
+
+서버가 헤더를 안 보내면 → 브라우저가 차단
+
+---
+
+## Preflight 요청 (OPTIONS)
+
+POST, PUT, DELETE 등은 **사전 확인** 후 실제 요청
+
+```
+1단계: [브라우저] → OPTIONS /users (이 요청 보내도 되나요?)
+       [서버]    ← 허용 메서드: GET, POST, PUT, DELETE ✅
+
+2단계: [브라우저] → POST /users (실제 요청)
+       [서버]    ← 200 OK + 데이터
+```
+
+`maxAge` 설정 → Preflight 결과 캐시 (매번 안 보냄)
+
+---
+
+## Simple vs Preflight
+
+| 구분 | Simple Request | Preflight Request |
+|------|---------------|-------------------|
+| 메서드 | GET, HEAD, POST | PUT, DELETE, PATCH |
+| Content-Type | form-data, text/plain | **application/json** |
+| 사전 확인 | 없음 | OPTIONS 먼저 |
+
+우리의 API 는 `application/json` 사용 → **Preflight 발생!**
+
+---
+
+## Spring Boot CORS 설정
+
+```java
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
+    }
 }
 ```
 
-```
-Started BackendApplication in 0.8 seconds
-// 바로 종료됨!
-```
+---
 
-> 웹 서버가 없으므로 시작 후 할 일이 없어 종료된다.
+## 각 설정의 의미
+
+| 메서드 | 설명 | 값 |
+|--------|------|----|
+| `addMapping("/**")` | 모든 경로에 CORS 적용 | `/**` |
+| `allowedOrigins` | 허용할 프론트엔드 주소 | `http://localhost:3000` |
+| `allowedMethods` | 허용할 HTTP 메서드 | GET, POST, PUT, DELETE, OPTIONS |
+| `allowedHeaders("*")` | 모든 요청 헤더 허용 | `*` |
+| `allowCredentials(true)` | 쿠키/JWT 전송 허용 | `true` |
+| `maxAge(3600)` | Preflight 캐시 1시간 | `3600`초 |
 
 ---
 
-## After: web/start 브랜치
+## 주의: allowCredentials + allowedOrigins
 
-```groovy
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'  // 추가!
-    // ...
-}
-```
+```java
+// ❌ 에러! credentials 사용 시 * 불가
+.allowedOrigins("*")
+.allowCredentials(true)
 
-```
-Tomcat initialized with port 8080 (http)
-Started BackendApplication in 1.5 seconds
-```
+// ✅ 특정 Origin 명시
+.allowedOrigins("http://localhost:3000")
+.allowCredentials(true)
 
-> 톰캣이 8080 포트에서 대기한다!
+// ✅ 여러 Origin 허용
+.allowedOrigins("http://localhost:3000", "https://myapp.com")
+.allowCredentials(true)
+```
 
 ---
 
-## 단 한 줄의 차이
+## CORS 응답 헤더
 
-```diff
- dependencies {
-     implementation 'org.springframework.boot:spring-boot-starter'
-+    implementation 'org.springframework.boot:spring-boot-starter-web'
-     testImplementation 'org.springframework.boot:spring-boot-starter-test'
- }
-```
-
-이 한 줄이 가져오는 것:
-- **Spring MVC** - 웹 프레임워크
-- **Embedded Tomcat** - 내장 웹 서버
-- **Jackson** - JSON 변환 라이브러리
-
----
-
-## 내장 톰캣 vs 전통적 방식
-
-| 전통적 방식 | Spring Boot 방식 |
-|---|---|
-| Tomcat 별도 설치 | 프로젝트에 내장 |
-| WAR 패키징 + 배포 | JAR 하나로 실행 |
-| 서버 관리 필요 | `java -jar app.jar` |
-| 설정 복잡 | 자동 설정 |
-
----
-
-## Auto Configuration이 하는 일
-
-`spring-boot-starter-web` 추가 시 자동으로:
-
-1. **DispatcherServlet** 등록
-   - 모든 HTTP 요청의 진입점
-2. **내장 톰캣** 시작
-   - 기본 포트: 8080
-3. **Jackson ObjectMapper** 등록
-   - Java 객체를 JSON으로 자동 변환
-4. **기본 에러 페이지** 설정
-   - `/error` 경로의 Whitelabel Error Page
-
----
-
-## 스타터 의존성이란?
+서버 → 브라우저로 전달되는 헤더:
 
 ```
-spring-boot-starter-web
-├── spring-boot-starter          ← 핵심 스타터
-├── spring-webmvc                ← Spring MVC
-├── tomcat-embed-core            ← 내장 톰캣
-├── jackson-databind             ← JSON 처리
-└── ...                          ← 기타 관련 라이브러리
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: *
+Access-Control-Allow-Credentials: true
+Access-Control-Max-Age: 3600
 ```
 
-> 하나의 스타터 = 관련 라이브러리 **묶음**
-> 버전 호환성도 자동으로 관리된다.
+브라우저는 이 헤더를 보고 요청 허용/차단을 결정
 
 ---
 
-## 확인해보기
+## 확인 방법
 
 ```bash
-# 브랜치 전환
-git checkout web/start
+# Preflight 확인 (OPTIONS)
+curl -v -X OPTIONS http://localhost:8080/users \
+  -H "Origin: http://localhost:3000" \
+  -H "Access-Control-Request-Method: POST"
 
-# 실행
-./gradlew bootRun
+# 일반 요청 CORS 헤더 확인
+curl -v http://localhost:8080/users \
+  -H "Origin: http://localhost:3000"
 
-# 다른 터미널에서 테스트
-curl http://localhost:8080
+# 허용되지 않은 Origin (차단됨)
+curl -v http://localhost:8080/users \
+  -H "Origin: http://localhost:9999"
 ```
-
-Whitelabel Error Page가 나오면 **성공**!
-(컨트롤러가 아직 없으므로 에러 페이지가 정상)
 
 ---
 
-## 포트 변경 (선택)
+## 실습 (practice 브랜치)
 
-`application.properties`에 추가:
-
-```properties
-server.port=9090
+```bash
+git checkout feature/cors-practice
 ```
 
-다시 실행하면 9090 포트에서 시작된다.
+**과제:**
+`WebMvcConfig.addCorsMappings()` 메서드 내부를 완성하세요
 
-> Spring Boot는 `application.properties`로 다양한 설정을 변경할 수 있다.
+- `addMapping` → 모든 경로
+- `allowedOrigins` → `http://localhost:3000`
+- `allowedMethods` → GET, POST, PUT, DELETE, OPTIONS
+- `allowedHeaders` → 전부 허용
+- `allowCredentials` → true
+- `maxAge` → 3600
 
 ---
 
 ## 핵심 정리
 
-| 키워드 | 설명 |
-|---|---|
-| `spring-boot-starter-web` | 웹 개발에 필요한 모든 것을 포함하는 스타터 |
-| Embedded Tomcat | 별도 설치 없이 JAR 안에 내장된 웹 서버 |
-| Auto Configuration | 의존성 추가만으로 관련 설정이 자동 적용 |
+> **CORS = 다른 Origin 간 요청을 허용하는 메커니즘
+> 브라우저가 차단 → 서버가 허용 헤더로 해제
+> Preflight(OPTIONS) → 사전 확인 후 실제 요청**
 
-> **한 줄 요약:** `spring-boot-starter-web` 한 줄로 내장 톰캣 + Spring MVC + Jackson이 자동 설정된다.
-
----
-
-## 다음 단계
-
-**Step 3: GET 요청/응답 다루기** (`web/get`)
-
-- `@RestController`로 첫 번째 API 만들기
-- 다양한 GET 요청 패턴 학습
+**기억할 키워드:**
+- Same-Origin Policy - 브라우저 보안 정책
+- `addCorsMappings()` - Spring CORS 설정
+- `allowedOrigins` - 허용할 프론트엔드 주소
+- `allowCredentials(true)` - JWT/쿠키 전송 허용
+- `maxAge` - Preflight 캐시 시간
       </textarea>
     </section>
   </div>
@@ -369,9 +402,9 @@ server.port=9090
 
 <!-- Step navigation bar -->
 <div class="step-nav">
-  <div><a href="step01-project-init.html">&larr; Step 01</a></div>
+  <div><a href="step15-pageable.html">&larr; Step 15</a></div>
   <div class="nav-center"><a href="index.html">&#9776; Index</a></div>
-  <div><a href="step03-get-request.html">Step 03 &rarr;</a> <span class="shortcut-hint">&nbsp;&nbsp;?=shortcuts</span></div>
+  <div> <span class="shortcut-hint">&nbsp;&nbsp;?=shortcuts</span></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>

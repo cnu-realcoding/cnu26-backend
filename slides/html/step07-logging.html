@@ -23,6 +23,9 @@
     --accent-dark: #1e40af;
   }
 
+  .reveal h1, .reveal h2, .reveal h3 {
+    text-transform: none;
+  }
   .reveal h1 {
     font-size: 1.8em;
     color: var(--accent);
@@ -327,7 +330,7 @@ java.lang.ArithmeticException: / by zero
 
 ---
 
-# 롤링 파일로 로그 관리하기
+# Rolling File Appender
 
 ```xml
 <appender name="ROLLING_FILE"
