@@ -30,6 +30,7 @@ STEP_BRANCHES = {
     "step14": "shop/auth",
     "step15": "feature/pageable",
     "step16": "feature/cors",
+    "step17": "feature/frontend-api",
 }
 
 HTML_TEMPLATE = """\
